@@ -147,3 +147,77 @@ void addShip(char x, char y, int shipSize, char **array, char direction)
         }
     }
 }
+// 8. function to insert the ships by the player
+void insert(char ship[10], int size, char **grid)
+{
+    char *coordinates = (char *)malloc(sizeof(char) * 2);
+    char *direction = (char *)malloc(sizeof(char) * 10);
+    printf("Please enter the coordinate to place your %s: ", ship);
+    scanf("%s", coordinates);
+    printf("Please enter the direction of your %s: ", ship);
+    scanf("%s", direction);
+
+    int c = toupper(coordinates[0]);
+    int r = coordinates[1];
+    invert(&c, &r);
+
+    if (checkShip(c, r, size, grid, direction[0], 10) == 1)
+    {
+        addShip(c, r, size, grid, direction[0]);
+        printArray(grid, 10);
+        printf("\nThe ship is succesfully inserted.\n\n");
+    }
+    else
+    {
+        printArray(grid, 10);
+        free(coordinates);
+        free(direction);
+        insert(ship, size, grid);
+    }
+}
+
+// 9. function responsible for adding ships in turns mechanism
+void insertingInTurns(char *name1, char *name2, char **player1, char **player2, char *ship, int size,int delayTime)
+{
+    printf("%s, it is your turn to insert your %s.\n", name1, ship);
+    printArray(player1, 10);
+    insert(ship, size, player1);
+    delay(delayTime);
+    system("clear");
+    printf("%s, it is your turn to insert your %s.\n", name2, ship);
+    printArray(player2, 10);
+    insert(ship, size, player2);
+    delay(delayTime);
+    system("clear");
+}
+
+// 10. function to print available moves
+void availableMoves(int shipHits, int sweeps, int smoke, int lastTurn)
+{
+    printf("The available moves are: Fire ");
+    if (sweeps > 0)
+        printf("RadarSweeps ");
+    if (shipHits > smoke)
+        printf("SmokeScreen ");
+    if (lastTurn == 1)
+        printf("Artillery ");
+    if (lastTurn == 1 && shipHits == 3)
+        printf("Torpedo ");
+    printf("\n");
+}
+
+// 11. function to print sunk message
+void printMessage(char letter)
+{
+    printf("You sunk the ");
+    if (letter == 'C')
+        printf("carrier");
+    else if (letter == 'D')
+        printf("destroyer");
+    else if (letter == 'B')
+        printf("battleship");
+    else
+        printf("submarine");
+    printf(" ship of your enemy!\n");
+}
+
