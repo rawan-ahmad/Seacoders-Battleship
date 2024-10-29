@@ -88,7 +88,7 @@ int main()
   int lastTurn2 = 0;
 
   char *move = (char *)malloc(sizeof(char) * 10);
-  char *coord = (char *)malloc(sizeof(char) * 2);
+  char *coord = (char *)malloc(sizeof(char) * 5);
 
   // turns start here
   while (shipHits1 < 4 && shipHits2 < 4)
