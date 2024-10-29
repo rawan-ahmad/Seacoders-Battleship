@@ -26,7 +26,6 @@ int main()
     else
       printf("Invalid input.\n");
   }
-  // check input
 
   // ask for names
   char *name1 = (char *)malloc(sizeof(char) * 100);
@@ -57,7 +56,6 @@ int main()
   {
     player1[i] = (char *)malloc(sizeof(char) * SIZE);
   }
-
   createArray(player1, SIZE);
 
   char **player2;
@@ -66,29 +64,74 @@ int main()
   {
     player2[i] = (char *)malloc(sizeof(char) * SIZE);
   }
-  createArray(player2, SIZE);
-createArray(player2, SIZE);
+  createArray(player2, SIZE);
 
-    // each player adds his own ships
-    insertingInTurns(name1, name2, player1, player2, "Carrier", 5, delayTime);
-    insertingInTurns(name1, name2, player1, player2, "Battleship", 4, delayTime);
-    insertingInTurns(name1, name2, player1, player2, "Destroyer", 3, delayTime);
-    insertingInTurns(name1, name2, player1, player2, "Submarine", 2, delayTime);
+  // each player adds his own ships
+  insertingInTurns(name1, name2, player1, player2, "Carrier", 5, delayTime);
+  insertingInTurns(name1, name2, player1, player2, "Battleship", 4, delayTime);
+  insertingInTurns(name1, name2, player1, player2, "Destroyer", 3, delayTime);
+  insertingInTurns(name1, name2, player1, player2, "Submarine", 2, delayTime);
 
-    // beginning the fight
-    printf("\nLet the fight begin! \n\nHere are some instructions:\nYour move format should be:\n- move coordinate: Fire B3\n\n");
+  // beginning the fight
+  printf("\nLet the fight begin! \n\nHere are some instructions:\nYour move format should be:\n- move coordinate: Fire B3\n\n");
 
-    int shipHits1 = 0;
-    int shipHits2 = 0;
+  int shipHits1 = 0;
+  int shipHits2 = 0;
 
-    int sweeps1 = 3;
-    int sweeps2 = 3;
+  int sweeps1 = 3;
+  int sweeps2 = 3;
 
-    int smoke1 = 0;
-    int smoke2 = 0;
+  int smoke1 = 0;
+  int smoke2 = 0;
 
-    int lastTurn1 = 0;
-    int lastTurn2 = 0;
+  int lastTurn1 = 0;
+  int lastTurn2 = 0;
 
-    char *move = (char *)malloc(sizeof(char) * 10);
-    char *coord = (char *)malloc(sizeof(char) * 2);
+  char *move = (char *)malloc(sizeof(char) * 10);
+  char *coord = (char *)malloc(sizeof(char) * 2);
+
+  // turns start here
+  while (shipHits1 < 4 && shipHits2 < 4)
+  {
+    // player 1's turn
+    printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name1);
+    printGrid(player2, SIZE);
+    availableMoves(shipHits1, sweeps1, smoke1, lastTurn1);
+    printf("From the above moves, choose your next one with its coordinate: ");
+    scanf("%s %s", move, coord);
+    int c = toupper(coord[0]);
+    int r = coord[1];
+
+    invert(&c, &r);
+    fighting(c, r, &shipHits1, &lastTurn1, &sweeps1, &smoke1, move[0], difficulty[0], player1, player2, coord[0], delayTime);
+
+    if (shipHits1 == 4)
+      break;
+
+    // player 2's turn
+    printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", name2);
+    printGrid(player1, SIZE);
+    availableMoves(shipHits2, sweeps2, smoke2, lastTurn2);
+    printf("From the above moves, choose your next one with its coordinate: ");
+    scanf("%s %s", move, coord);
+    c = toupper(coord[0]);
+    r = coord[1];
+    invert(&c, &r);
+    fighting(c, r, &shipHits2, &lastTurn2, &sweeps2, &smoke2, move[0], difficulty[0], player2, player1, coord[0], delayTime);
+    printf("\n");
+  }
+
+  // announcing the winner
+  if (shipHits1 == 4)
+    printf("%s is the winner!\n", name1);
+  else
+    printf("%s is the winner!\n", name2);
+
+  // freeing
+  free(difficulty);
+  free(name1);
+  free(player1);
+  free(player2);
+  free(move);
+  free(coord);
+}
