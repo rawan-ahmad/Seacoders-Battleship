@@ -206,18 +206,88 @@ void availableMoves(int shipHits, int sweeps, int smoke, int lastTurn)
     printf("\n");
 }
 
-// 11. function to print sunk message
-void printMessage(char letter)
+
+
+// 12. function to check if the boat sunk
+int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship)
 {
-    printf("You sunk the ");
-    if (letter == 'C')
-        printf("carrier");
-    else if (letter == 'D')
-        printf("destroyer");
-    else if (letter == 'B')
-        printf("battleship");
-    else
-        printf("submarine");
-    printf(" ship of your enemy!\n");
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (toupper(grid[i][j]) == toupper(ship))
+            {
+                return 0;
+            }
+        }
+    }
 }
 
+// 13. function to fire
+void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits)
+{
+    if (tolower(difficulty) == 'e' && grid[row][col] == '~')
+    {
+        grid[row][col] = 'o';
+        printf("Miss!\n");
+    }
+    else if (grid[row][col] != '~')
+    {
+        grid[row][col] = '*';
+        printf("Hit!\n");
+    }
+    printGrid(grid, 10);
+}
+
+// 14. function to radarsweep
+void RadarSweep(int col, int row, char **grid)
+{
+    for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            if (grid[row + i][col + j] == 'C' || grid[row + i][col + j] == 'D' || grid[row + i][col + j] == 'S' || grid[row + i][col + j] == 'B')
+            {
+                printf("Enemy ships found!\n");
+                return;
+            }
+        }
+    }
+    printf("No enemy ships found!\n");
+}
+
+// 15. function to smokescreen
+void SmokeScreen(int col, int row, char **array)
+{
+    for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            if (array[row + i][col + j] != '~' || array[row + i][col + j] != 'o')
+                array[row + i][col + j] = tolower(array[row + i][col + j]);
+        }
+    }
+}
+
+// 16. function to artillery
+void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits)
+{
+    for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            if (grid[row + i][col + j] == '~' && tolower(difficulty) == 'e' || grid[row + i][col + j] == 'o')
+            {
+                grid[row + i][col + j] = 'o';
+               printf("Miss!\n");
+            }
+            else
+            {
+                grid[row + i][col + j] = '*';
+                 printf("Hit!\n");
+            }
+        }
+    }
+    
+    printGrid(grid, 10);
+}
