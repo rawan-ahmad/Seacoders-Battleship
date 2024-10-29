@@ -10,6 +10,8 @@ int main()
 {
   // introduction
   printf("\nWelcome to battleship game! \nCoded by seacoders!\n\n");
+  printf("The goal of the game is to sink all 4 of the opponent's ships. The first player to sink all of the opponent's ships wins.");
+  
   // for a smoother transition between turns fix delayTime to 1200 or 1500
   const int delayTime = 0;
   // we fixed it at 0 to not risk errors due to the different hardware used by the user
