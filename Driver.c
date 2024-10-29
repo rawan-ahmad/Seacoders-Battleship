@@ -57,6 +57,7 @@ int main()
   {
     player1[i] = (char *)malloc(sizeof(char) * SIZE);
   }
+
   createArray(player1, SIZE);
 
   char **player2;
@@ -66,3 +67,28 @@ int main()
     player2[i] = (char *)malloc(sizeof(char) * SIZE);
   }
   createArray(player2, SIZE);
+createArray(player2, SIZE);
+
+    // each player adds his own ships
+    insertingInTurns(name1, name2, player1, player2, "Carrier", 5, delayTime);
+    insertingInTurns(name1, name2, player1, player2, "Battleship", 4, delayTime);
+    insertingInTurns(name1, name2, player1, player2, "Destroyer", 3, delayTime);
+    insertingInTurns(name1, name2, player1, player2, "Submarine", 2, delayTime);
+
+    // beginning the fight
+    printf("\nLet the fight begin! \n\nHere are some instructions:\nYour move format should be:\n- move coordinate: Fire B3\n\n");
+
+    int shipHits1 = 0;
+    int shipHits2 = 0;
+
+    int sweeps1 = 3;
+    int sweeps2 = 3;
+
+    int smoke1 = 0;
+    int smoke2 = 0;
+
+    int lastTurn1 = 0;
+    int lastTurn2 = 0;
+
+    char *move = (char *)malloc(sizeof(char) * 10);
+    char *coord = (char *)malloc(sizeof(char) * 2);
