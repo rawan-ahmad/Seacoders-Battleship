@@ -80,6 +80,7 @@ void invert(int *c, int *r)
     *c = *c - 'A';
     *r = *r - '0';
 }
+
 // 6. function to check if we can insert the ship: 1 if true - 0 if false
 int checkShip(int col, int row, int shipSize, char **grid, char direction, const int SIZE)
 {
@@ -93,7 +94,7 @@ int checkShip(int col, int row, int shipSize, char **grid, char direction, const
     // to check overlapping
     for (int i = 0; i < shipSize; i++)
     {
-        if (tolower(direction) == 'h' && grid[row][col + i] != '~'||tolower(direction) == 'v' && grid[row + i][col] != '~')
+        if (tolower(direction) == 'h' && grid[row][col + i] != '~' || tolower(direction) == 'v' && grid[row + i][col] != '~')
         {
             printf("\nThe place is taken. Please choose another coordinate.\n");
             return 0;
@@ -101,6 +102,8 @@ int checkShip(int col, int row, int shipSize, char **grid, char direction, const
     }
     return 1;
 }
+
+// 7. function to add the ship to the grid
 void addShip(int col, int row, int shipSize, char **grid, char direction)
 {
     // identifying the ship
@@ -131,6 +134,7 @@ void addShip(int col, int row, int shipSize, char **grid, char direction)
         }
     }
 }
+
 // 8. function to insert the ships by the player
 void insert(char ship[10], int size, char **grid)
 {
@@ -241,6 +245,11 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
         if (sunkShip(grid, lastTurn, shipHits, test) == 1)
             printMessage(toupper(test));
     }
+    else
+    {
+        printf("Miss!\n");
+        *lastTurn = 0;
+    }
     printGrid(grid, 10);
 }
 
@@ -272,6 +281,7 @@ void SmokeScreen(int col, int row, char **array)
                 array[row + i][col + j] = tolower(array[row + i][col + j]);
         }
     }
+    printf("Smokescreen is successfully applied.\n");
 }
 
 // 16. function to artillery
@@ -292,9 +302,8 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
             if (grid[row + i][col + j] == '~' && tolower(difficulty) == 'e' || grid[row + i][col + j] == 'o')
             {
                 grid[row + i][col + j] = 'o';
-                *lastTurn = 0;
             }
-            else
+            else if (grid[row + i][col + j] != '~')
             {
                 char test = grid[row + i][col + j];
                 grid[row + i][col + j] = '*';
@@ -311,9 +320,13 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
     if (found == 1 && sunk == 0)
         printf("Hit!\n");
     else if (found == 0)
+    {
         printf("Miss!\n");
+        *lastTurn = 0;
+    }
     printGrid(grid, 10);
 }
+
 // 17. function to torpedo
 void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHits)
 {
@@ -328,7 +341,6 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
             if (tolower(difficulty) == 'e' && grid[row][col] == '~' || grid[row][col] == 'o')
             {
                 grid[row][col] = 'o';
-                *lastTurn = 0;
             }
             else if (grid[row][col] != '~')
             {
@@ -351,7 +363,6 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
             if (tolower(difficulty) == 'e' && grid[row][col] == '~' || grid[row][col] == 'o')
             {
                 grid[row][col] = 'o';
-                *lastTurn = 0;
             }
             else if (grid[row][col] != '~')
             {
@@ -371,7 +382,10 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
     if (hits == 1 && sunk == 0)
         printf("Hit!\n");
     else if (hits == 0)
+    {
         printf("Miss!\n");
+        *lastTurn = 0;
+    }
     printGrid(grid, 10);
 }
 

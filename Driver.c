@@ -2,7 +2,6 @@
 // developers: Rawan Ahmad, Tala Chehayeb, Cynthia Khalil, Rafic Rachidi
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <ctype.h>
 #include "Battleship.h"
 
@@ -10,8 +9,8 @@ int main()
 {
   // introduction
   printf("\nWelcome to battleship game! \nCoded by seacoders!\n\n");
-  printf("The goal of the game is to sink all 4 of the opponent's ships. The first player to sink all of the opponent's ships wins.");
-  
+  printf("The goal of the game is to sink all 4 of the opponent's ships.\nThe first player to sink all of the opponent's ships wins.\n\n");
+
   // for a smoother transition between turns fix delayTime to 1200 or 1500
   const int delayTime = 0;
   // we fixed it at 0 to not risk errors due to the different hardware used by the user
@@ -41,13 +40,12 @@ int main()
   // randomly choosing a player and store player 1 in name 1 for later
   int randomPlayer = rand() % (2) + 1;
   printf("\nA random player is chosen to play first!\n\n ");
+  char *temp = (char *)malloc(sizeof(char) * 100);
   if (randomPlayer != 1)
   {
-    char *temp = (char *)malloc(sizeof(char) * 100);
     temp = name1;
     name1 = name2;
     name2 = temp;
-    free(temp);
   }
 
   // adding the ships
@@ -103,9 +101,8 @@ int main()
     scanf("%s %s", move, coord);
     int c = toupper(coord[0]);
     int r = coord[1];
-
     invert(&c, &r);
-    fighting(c, r, &shipHits1, &lastTurn1, &sweeps1, &smoke1, move[0], difficulty[0], player1, player2, coord[0], delayTime);
+    fighting(c, r, &shipHits1, &lastTurn1, &sweeps1, &smoke1, move[0], difficulty[0], player1, player2, toupper(coord[0]), delayTime);
 
     if (shipHits1 == 4)
       break;
@@ -119,7 +116,7 @@ int main()
     c = toupper(coord[0]);
     r = coord[1];
     invert(&c, &r);
-    fighting(c, r, &shipHits2, &lastTurn2, &sweeps2, &smoke2, move[0], difficulty[0], player2, player1, coord[0], delayTime);
+    fighting(c, r, &shipHits2, &lastTurn2, &sweeps2, &smoke2, move[0], difficulty[0], player2, player1, toupper(coord[0]), delayTime);
     printf("\n");
   }
 
@@ -132,6 +129,7 @@ int main()
   // freeing
   free(difficulty);
   free(name1);
+  free(temp);
   free(player1);
   free(player2);
   free(move);
