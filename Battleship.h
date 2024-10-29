@@ -80,3 +80,70 @@ void invert(int *c, int *r)
     *c = *c - 'A';
     *r = *r - '0';
 }
+// 6. function to check if we can insert the ship: 1 if true - 0 if false
+int checkShip(char x, char y, int shipSize, char **array, char direction, const int SIZE)
+{
+    // convert from char to an int
+    int xCoordinate = x - 'A';
+    int yCoordinate = y - '0';
+
+    // to check the bounds
+    if (xCoordinate >= SIZE || yCoordinate >= SIZE || xCoordinate < 0 || yCoordinate < 0 || xCoordinate + shipSize > SIZE && tolower(direction) == 'h' || yCoordinate + shipSize > SIZE && tolower(direction) == 'v')
+    {
+        printf("\nThe ship is out of bounds; you can't place it here.\nPlease choose another coordinate.\n");
+        return 0;
+    }
+
+    // to check overlapping
+
+    for (int i = 0; i < shipSize; i++)
+    {
+        if (tolower(direction) == 'h' && array[yCoordinate][xCoordinate + i] != '~')
+        {
+            printf("\nThe place is taken. Please choose another coordinate.\n");
+            return 0;
+        }
+        else if (tolower(direction) == 'v' && array[yCoordinate + i][xCoordinate] != '~')
+        {
+            printf("\nThe place is taken. Please choose another coordinate.\n");
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+// 7. function to add the ship
+void addShip(char x, char y, int shipSize, char **array, char direction)
+{
+    int xCoordinate = x - 'A';
+    int yCoordinate = y - '0';
+
+    // identifying the ship
+    char ship;
+    if (shipSize == 5)
+        ship = 'C';
+    else if (shipSize == 4)
+        ship = 'B';
+    else if (shipSize == 3)
+        ship = 'D';
+    else
+        ship = 'S';
+
+    // if vertical we add i to the x coordinate
+    if (tolower(direction) == 'v')
+    {
+        for (int i = 0; i < shipSize; i++)
+        {
+            array[yCoordinate + i][xCoordinate] = ship;
+        }
+    }
+    // if horizontal we add i to the y coordinate
+    else if (tolower(direction) == 'h')
+    {
+        for (int i = 0; i < shipSize; i++)
+        {
+            array[yCoordinate][xCoordinate + i] = ship;
+        }
+    }
+}
