@@ -81,44 +81,28 @@ void invert(int *c, int *r)
     *r = *r - '0';
 }
 // 6. function to check if we can insert the ship: 1 if true - 0 if false
-int checkShip(char x, char y, int shipSize, char **array, char direction, const int SIZE)
+int checkShip(int col, int row, int shipSize, char **grid, char direction, const int SIZE)
 {
-    // convert from char to an int
-    int xCoordinate = x - 'A';
-    int yCoordinate = y - '0';
-
     // to check the bounds
-    if (xCoordinate >= SIZE || yCoordinate >= SIZE || xCoordinate < 0 || yCoordinate < 0 || xCoordinate + shipSize > SIZE && tolower(direction) == 'h' || yCoordinate + shipSize > SIZE && tolower(direction) == 'v')
+    if (col >= SIZE || row >= SIZE || col < 0 || row < 0 || col + shipSize > SIZE && tolower(direction) == 'h' || row + shipSize > SIZE && tolower(direction) == 'v')
     {
-        printf("\nThe ship is out of bounds; you can't place it here.\nPlease choose another coordinate.\n");
+        printf("\nYour coordinates are invalid; you can't place it here.\nPlease choose another coordinate.\n");
         return 0;
     }
 
     // to check overlapping
-
     for (int i = 0; i < shipSize; i++)
     {
-        if (tolower(direction) == 'h' && array[yCoordinate][xCoordinate + i] != '~')
-        {
-            printf("\nThe place is taken. Please choose another coordinate.\n");
-            return 0;
-        }
-        else if (tolower(direction) == 'v' && array[yCoordinate + i][xCoordinate] != '~')
+        if (tolower(direction) == 'h' && grid[row][col + i] != '~'||tolower(direction) == 'v' && grid[row + i][col] != '~')
         {
             printf("\nThe place is taken. Please choose another coordinate.\n");
             return 0;
         }
     }
-
     return 1;
 }
-
-// 7. function to add the ship
-void addShip(char x, char y, int shipSize, char **array, char direction)
+void addShip(int col, int row, int shipSize, char **grid, char direction)
 {
-    int xCoordinate = x - 'A';
-    int yCoordinate = y - '0';
-
     // identifying the ship
     char ship;
     if (shipSize == 5)
@@ -130,20 +114,20 @@ void addShip(char x, char y, int shipSize, char **array, char direction)
     else
         ship = 'S';
 
-    // if vertical we add i to the x coordinate
+    // if vertical we add i to the row
     if (tolower(direction) == 'v')
     {
         for (int i = 0; i < shipSize; i++)
         {
-            array[yCoordinate + i][xCoordinate] = ship;
+            grid[row + i][col] = ship;
         }
     }
-    // if horizontal we add i to the y coordinate
+    // if horizontal we add i to the column
     else if (tolower(direction) == 'h')
     {
         for (int i = 0; i < shipSize; i++)
         {
-            array[yCoordinate][xCoordinate + i] = ship;
+            grid[row][col + i] = ship;
         }
     }
 }
