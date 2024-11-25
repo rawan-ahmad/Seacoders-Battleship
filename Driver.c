@@ -38,16 +38,14 @@ int main()
 
   // adding the ships
   const int SIZE = 10;
-  char **player;
-  player = (char **)malloc(sizeof(char *) * SIZE);
+  char **player= (char **)malloc(sizeof(char *) * SIZE);
   for (int i = 0; i < SIZE; i++)
   {
     player[i] = (char *)malloc(sizeof(char) * SIZE);
   }
   createArray(player, SIZE);
 
-  char **bot;
-  bot = (char **)malloc(sizeof(char *) * SIZE);
+  char **bot = (char **)malloc(sizeof(char *) * SIZE);
   for (int i = 0; i < SIZE; i++)
   {
     bot[i] = (char *)malloc(sizeof(char) * SIZE);
@@ -55,6 +53,8 @@ int main()
   createArray(bot, SIZE);
 
   // FOR IMPLEMENTATION: let the bot add his ships
+  addMovesBot(bot);
+  printArray(bot,10);
 
   // the player adds his own ships
   insert(player, "Carrier", 5, delayTime, name);
@@ -105,7 +105,7 @@ int main()
 
     // player 2's turn
     // else
-    printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
+    //printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
     printGrid(player, SIZE);
     availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB);
     printf("From the above moves, choose your next one with its coordinate: ");

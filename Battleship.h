@@ -3,6 +3,10 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
+// do a probability density function
+// add the ships in a smart way
+// hits and misses
+
 // game functions will be here
 
 // 1. to delay time before clearing for smoother transition
@@ -82,12 +86,13 @@ void invert(int *c, int *r)
 }
 
 // 6. function to check if we can insert the ship: 1 if true - 0 if false
-int checkShip(int col, int row, int shipSize, char **grid, char direction, const int SIZE)
+int checkShip(int col, int row, int shipSize, char **grid, char direction, const int SIZE, int bot)
 {
     // to check the bounds
     if (col >= SIZE || row >= SIZE || col < 0 || row < 0 || col + shipSize > SIZE && tolower(direction) == 'h' || row + shipSize > SIZE && tolower(direction) == 'v')
     {
-        printf("\nYour coordinates are invalid; you can't place it here.\nPlease choose another coordinate.\n");
+        if (bot == 0)
+            printf("\nYour coordinates are invalid; you can't place it here.\nPlease choose another coordinate.\n");
         return 0;
     }
 
@@ -96,7 +101,8 @@ int checkShip(int col, int row, int shipSize, char **grid, char direction, const
     {
         if (tolower(direction) == 'h' && grid[row][col + i] != '~' || tolower(direction) == 'v' && grid[row + i][col] != '~')
         {
-            printf("\nThe place is taken. Please choose another coordinate.\n");
+            if (bot == 0)
+                printf("\nThe place is taken. Please choose another coordinate.\n");
             return 0;
         }
     }
@@ -136,7 +142,7 @@ void addShip(int col, int row, int shipSize, char **grid, char direction)
 }
 
 // 8. function to insert the ships by the player
-void insert(char **grid, char ship[10], int size, int delayTime, char **name)
+void insert(char **grid, char ship[10], int size, int delayTime, char *name)
 {
     printf("%s, it is the time to insert your %s ship.\n", name, ship);
     printArray(grid, 10);
@@ -151,7 +157,7 @@ void insert(char **grid, char ship[10], int size, int delayTime, char **name)
     int r = coordinates[1];
     invert(&c, &r);
 
-    if (checkShip(c, r, size, grid, direction[0], 10) == 1)
+    if (checkShip(c, r, size, grid, direction[0], 10, 0) == 1)
     {
         addShip(c, r, size, grid, direction[0]);
         printArray(grid, 10);
@@ -167,6 +173,31 @@ void insert(char **grid, char ship[10], int size, int delayTime, char **name)
 
     delay(delayTime);
     system("clear");
+}
+
+// 9. adding bot ships randomly
+// we can add more smart strategies
+void addMovesBot(char **grid)
+{ int i = 2;
+    while (i<=5)
+    {
+        int x = rand() % (9);
+        int y = rand() % (9);
+        int dir = rand() % (2) + 1;
+        char d;
+        if (dir == 1)
+        {
+            d = 'h';
+        }
+        else
+            d = 'v';
+            printf("%d %d\n",x,y);
+        if (checkShip(x, y, i, grid, d, 10, 1) == 1)
+        {
+            addShip(x, y, i, grid, d);
+            i++;
+        }
+    } 
 }
 
 // CHANGE
