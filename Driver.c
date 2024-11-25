@@ -28,110 +28,106 @@ int main()
       printf("Invalid input.\n");
   }
 
-  // ask for names
-  char *name1 = (char *)malloc(sizeof(char) * 100);
-  char *name2 = (char *)malloc(sizeof(char) * 100);
-  printf("\nFor player 1, please enter your name: ");
-  scanf("%s", name1);
-  printf("For player 2, please enter your name: ");
-  scanf("%s", name2);
-  system("clear");
+  // ask for the name
+  char *name = (char *)malloc(sizeof(char) * 100);
+  printf("\nPlease enter your name: ");
+  scanf("%s", name);
+  // char *name2 = "The bot";
 
-  // randomly choosing a player and store player 1 in name 1 for later
-  int randomPlayer = rand() % (2) + 1;
-  printf("\nA random player is chosen to play first!\n\n ");
-  char *temp = (char *)malloc(sizeof(char) * 100);
-  if (randomPlayer != 1)
-  {
-    temp = name1;
-    name1 = name2;
-    name2 = temp;
-  }
+  system("clear");
 
   // adding the ships
   const int SIZE = 10;
-  char **player1;
-  player1 = (char **)malloc(sizeof(char *) * SIZE);
+  char **player;
+  player = (char **)malloc(sizeof(char *) * SIZE);
   for (int i = 0; i < SIZE; i++)
   {
-    player1[i] = (char *)malloc(sizeof(char) * SIZE);
+    player[i] = (char *)malloc(sizeof(char) * SIZE);
   }
-  createArray(player1, SIZE);
+  createArray(player, SIZE);
 
-  char **player2;
-  player2 = (char **)malloc(sizeof(char *) * SIZE);
+  char **bot;
+  bot = (char **)malloc(sizeof(char *) * SIZE);
   for (int i = 0; i < SIZE; i++)
   {
-    player2[i] = (char *)malloc(sizeof(char) * SIZE);
+    bot[i] = (char *)malloc(sizeof(char) * SIZE);
   }
-  createArray(player2, SIZE);
+  createArray(bot, SIZE);
 
-  // each player adds his own ships
-  insertingInTurns(name1, name2, player1, player2, "Carrier", 5, delayTime);
-  insertingInTurns(name1, name2, player1, player2, "Battleship", 4, delayTime);
-  insertingInTurns(name1, name2, player1, player2, "Destroyer", 3, delayTime);
-  insertingInTurns(name1, name2, player1, player2, "Submarine", 2, delayTime);
+  // FOR IMPLEMENTATION: let the bot add his ships
+
+  // the player adds his own ships
+  insert(player, "Carrier", 5, delayTime, name);
+  insert(player, "Battleship", 4, delayTime, name);
+  insert(player, "Destroyer", 3, delayTime, name);
+  insert(player, "Submarine", 2, delayTime, name);
+
+  // randomly choosing a player 
+  int randomPlayer = rand() % (2) + 1;
+  printf("\nA random player is chosen to play first!\n\n ");
 
   // beginning the fight
   printf("\nLet the fight begin! \n\nHere are some instructions:\nYour move format should be:\n- move coordinate: Fire B3\n\n");
 
-  int shipHits1 = 0;
-  int shipHits2 = 0;
+  int shipHits = 0;
+  int shipHitsB = 0;
 
-  int sweeps1 = 3;
-  int sweeps2 = 3;
+  int sweeps = 3;
+  int sweepsB = 3;
 
-  int smoke1 = 0;
-  int smoke2 = 0;
+  int smoke = 0;
+  int smokeB = 0;
 
-  int lastTurn1 = 0;
-  int lastTurn2 = 0;
+  int lastTurn = 0;
+  int lastTurnB = 0;
 
   char *move = (char *)malloc(sizeof(char) * 10);
   char *coord = (char *)malloc(sizeof(char) * 5);
 
+// NEEDS MODIFICATIONS
   // turns start here
-  while (shipHits1 < 4 && shipHits2 < 4)
+  while (shipHits < 4 && shipHitsB < 4)
   {
     // player 1's turn
-    printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name1);
-    printGrid(player2, SIZE);
-    availableMoves(shipHits1, sweeps1, smoke1, lastTurn1);
+    // if it is not the bot do
+    printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
+    printGrid(bot, SIZE);
+    availableMoves(shipHits, sweeps, smoke, lastTurn);
     printf("From the above moves, choose your next one with its coordinate: ");
     scanf("%s %s", move, coord);
     int c = toupper(coord[0]);
     int r = coord[1];
     invert(&c, &r);
-    fighting(c, r, &shipHits1, &lastTurn1, &sweeps1, &smoke1, move[0], difficulty[0], player1, player2, toupper(coord[0]), delayTime);
+    fighting(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime);
 
-    if (shipHits1 == 4)
+    if (shipHits == 4)
       break;
 
     // player 2's turn
-    printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", name2);
-    printGrid(player1, SIZE);
-    availableMoves(shipHits2, sweeps2, smoke2, lastTurn2);
+    // else
+    printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
+    printGrid(player, SIZE);
+    availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB);
     printf("From the above moves, choose your next one with its coordinate: ");
     scanf("%s %s", move, coord);
     c = toupper(coord[0]);
     r = coord[1];
     invert(&c, &r);
-    fighting(c, r, &shipHits2, &lastTurn2, &sweeps2, &smoke2, move[0], difficulty[0], player2, player1, toupper(coord[0]), delayTime);
+    fighting(c, r, &shipHitsB, &lastTurnB, &sweepsB, &smokeB, move[0], difficulty[0], bot, player, toupper(coord[0]), delayTime);
     printf("\n");
   }
 
   // announcing the winner
-  if (shipHits1 == 4)
-    printf("%s is the winner!\n", name1);
+  if (shipHits == 4)
+    printf("%s is the winner!\n", name);
   else
-    printf("%s is the winner!\n", name2);
+    printf("The bot is the winner!\n");
 
   // freeing
   free(difficulty);
-  free(name1);
-  free(temp);
-  free(player1);
-  free(player2);
+  free(name);
+  free(player);
+  free(bot);
   free(move);
   free(coord);
 }

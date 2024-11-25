@@ -136,8 +136,10 @@ void addShip(int col, int row, int shipSize, char **grid, char direction)
 }
 
 // 8. function to insert the ships by the player
-void insert(char ship[10], int size, char **grid)
+void insert(char **grid, char ship[10], int size, int delayTime, char **name)
 {
+    printf("%s, it is the time to insert your %s ship.\n", name, ship);
+    printArray(grid, 10);
     char *coordinates = (char *)malloc(sizeof(char) * 2);
     char *direction = (char *)malloc(sizeof(char) * 10);
     printf("Please enter the coordinate to place your %s: ", ship);
@@ -160,25 +162,14 @@ void insert(char ship[10], int size, char **grid)
         printArray(grid, 10);
         free(coordinates);
         free(direction);
-        insert(ship, size, grid);
+        insert(grid, ship, size, delayTime, name);
     }
-}
 
-// 9. function responsible for adding ships in turns mechanism
-void insertingInTurns(char *name1, char *name2, char **player1, char **player2, char *ship, int size, int delayTime)
-{
-    printf("%s, it is your turn to insert your %s.\n", name1, ship);
-    printArray(player1, 10);
-    insert(ship, size, player1);
-    delay(delayTime);
-    system("clear");
-    printf("%s, it is your turn to insert your %s.\n", name2, ship);
-    printArray(player2, 10);
-    insert(ship, size, player2);
     delay(delayTime);
     system("clear");
 }
 
+// CHANGE
 // 10. function to print available moves
 void availableMoves(int shipHits, int sweeps, int smoke, int lastTurn)
 {
@@ -194,6 +185,7 @@ void availableMoves(int shipHits, int sweeps, int smoke, int lastTurn)
     printf("\n");
 }
 
+// CHANGE (the bot should know the missing and their sizes)
 // 11. function to print sunk message
 void printMessage(char letter)
 {
