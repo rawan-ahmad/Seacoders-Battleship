@@ -178,11 +178,14 @@ void insert(char **grid, char ship[10], int size, int delayTime, char *name)
 // 9. adding bot ships randomly
 // we can add more smart strategies
 void addMovesBot(char **grid)
-{ int i = 2;
-    while (i<=5)
+{ printf("Loading ...\nThe bot is placing his ships ...\n");
+    int i = 2;
+    int x, y;
+    while (i <= 5)
     {
-        int x = rand() % (9);
-        int y = rand() % (9);
+        srand(time(NULL));
+        x = rand() % (10);
+        y = rand() % (10);
         int dir = rand() % (2) + 1;
         char d;
         if (dir == 1)
@@ -191,13 +194,13 @@ void addMovesBot(char **grid)
         }
         else
             d = 'v';
-            printf("%d %d\n",x,y);
+        // printf("%d %d\n", x, y);
         if (checkShip(x, y, i, grid, d, 10, 1) == 1)
         {
             addShip(x, y, i, grid, d);
             i++;
         }
-    } 
+    } system("clear");
 }
 
 // CHANGE

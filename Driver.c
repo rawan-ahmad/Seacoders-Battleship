@@ -38,7 +38,7 @@ int main()
 
   // adding the ships
   const int SIZE = 10;
-  char **player= (char **)malloc(sizeof(char *) * SIZE);
+  char **player = (char **)malloc(sizeof(char *) * SIZE);
   for (int i = 0; i < SIZE; i++)
   {
     player[i] = (char *)malloc(sizeof(char) * SIZE);
@@ -54,7 +54,7 @@ int main()
 
   // FOR IMPLEMENTATION: let the bot add his ships
   addMovesBot(bot);
-  printArray(bot,10);
+  printArray(bot, 10);
 
   // the player adds his own ships
   insert(player, "Carrier", 5, delayTime, name);
@@ -62,7 +62,7 @@ int main()
   insert(player, "Destroyer", 3, delayTime, name);
   insert(player, "Submarine", 2, delayTime, name);
 
-  // randomly choosing a player 
+  // randomly choosing a player
   int randomPlayer = rand() % (2) + 1;
   printf("\nA random player is chosen to play first!\n\n ");
 
@@ -84,7 +84,7 @@ int main()
   char *move = (char *)malloc(sizeof(char) * 10);
   char *coord = (char *)malloc(sizeof(char) * 5);
 
-// NEEDS MODIFICATIONS
+  // NEEDS MODIFICATIONS
   // turns start here
   while (shipHits < 4 && shipHitsB < 4)
   {
@@ -105,7 +105,7 @@ int main()
 
     // player 2's turn
     // else
-    //printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
+    // printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
     printGrid(player, SIZE);
     availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB);
     printf("From the above moves, choose your next one with its coordinate: ");
