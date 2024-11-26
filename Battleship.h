@@ -178,7 +178,8 @@ void insert(char **grid, char ship[10], int size, int delayTime, char *name)
 // 9. adding bot ships randomly
 // we can add more smart strategies
 void addMovesBot(char **grid)
-{ printf("Loading ...\nThe bot is placing his ships ...\n");
+{
+    printf("Loading ...\nThe bot is placing his ships ...\n");
     int i = 2;
     int x, y;
     while (i <= 5)
@@ -200,26 +201,47 @@ void addMovesBot(char **grid)
             addShip(x, y, i, grid, d);
             i++;
         }
-    } system("clear");
+    }
+    system("clear");
 }
 
-// CHANGE
+// added an array to store available moves for the bot
 // 10. function to print available moves
-void availableMoves(int shipHits, int sweeps, int smoke, int lastTurn)
+void availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot, char *moves)
 {
+    int i = 0;
+    if (bot == 1)
+        moves[i++] = 'f';
     printf("The available moves are: Fire ");
     if (sweeps > 0)
+    {
+        if (bot == 1)
+            moves[i++] = 'r';
         printf("RadarSweeps ");
+    }
     if (shipHits > smoke)
+    {
+        if (bot == 1)
+            moves[i++] = 's';
         printf("SmokeScreen ");
+    }
     if (lastTurn == 1)
+    {
+        if (bot == 1)
+            moves[i++] = 'a';
         printf("Artillery ");
+    }
     if (lastTurn == 1 && shipHits == 3)
+    {
+        if (bot == 1)
+            moves[i++] = 't';
         printf("Torpedo ");
+    }
     printf("\n");
 }
 
 // CHANGE (the bot should know the missing and their sizes)
+// we should store the last hit move, last sink move and the last nothing move
 // 11. function to print sunk message
 void printMessage(char letter)
 {

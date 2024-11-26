@@ -92,7 +92,7 @@ int main()
     // if it is not the bot do
     printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
     printGrid(bot, SIZE);
-    availableMoves(shipHits, sweeps, smoke, lastTurn);
+    availableMoves(shipHits, sweeps, smoke, lastTurn,0,NULL);
     printf("From the above moves, choose your next one with its coordinate: ");
     scanf("%s %s", move, coord);
     int c = toupper(coord[0]);
@@ -107,7 +107,8 @@ int main()
     // else
     // printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
     printGrid(player, SIZE);
-    availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB);
+    char moves[5];
+    availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB,1,&moves);
     printf("From the above moves, choose your next one with its coordinate: ");
     scanf("%s %s", move, coord);
     c = toupper(coord[0]);
