@@ -9,7 +9,7 @@
 // method to check if it is entered
 // method to check rules and choose the best move
 
-// NOTES: created an array called aim: 
+// NOTES: created an array called aim:
 // at coord 0: 0 if miss, 1 if hit without sink, 2 if sink
 // at coord 1 and 2 are the last move coordinates
 
@@ -213,8 +213,9 @@ void addMovesBot(char **grid)
 
 // added an array to store available moves for the bot
 // 10. function to print available moves
-void availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot, char *moves)
+char *availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot)
 {
+    char *moves = (char *)malloc(sizeof(char) * 5);
     int i = 0;
     if (bot == 1)
         moves[i++] = 'f';
@@ -244,6 +245,12 @@ void availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot, 
         printf("Torpedo ");
     }
     printf("\n");
+    if (bot == 1)
+    {
+        return moves;
+    }
+    else
+        return 0;
 }
 
 // CHANGE (the bot should know the missing and their sizes)
@@ -266,6 +273,7 @@ void printMessage(char letter)
 // 12. function to check if the boat sunk
 int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char *aim, char c, char r)
 {
+
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
@@ -323,6 +331,48 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
     }
     printGrid(grid, 10);
 }
+// bot chooses which move to make 
+//we're going to add probability function for bot to choose based on it fa its gonna change alot
+void botHit(char **grid, char difficulty, int *shipHits, int sweeps, int smoke, int *lastTurn, char *aim)
+{
+    //this is only for the first move the bot should fire randomly
+    int row = rand() % (10);
+    int col = rand() % (10);
+    fire(col, row, grid, difficulty, lastTurn, shipHits, 1, aim);
+    char *moves = availableMoves(shipHits, sweeps, smoke, lastTurn, 1);
+    int elements = strlen(moves);
+    int randomIndex = rand() % elements;
+    switch (moves[randomIndex])
+    {
+    case 'f':
+        fire(col, row, grid, difficulty, lastTurn, shipHits, 1, aim);
+        break;
+    case 'r':
+        RadarSweep(col, row, grid);
+        break;
+    case 's':
+        SmokeScreen(col, row, grid);
+        break;
+    case 'a':
+        Artillery(col, row, grid, difficulty, lastTurn, shipHits, 1, aim);
+        break;
+    case 't':
+    {
+        int choice = rand() % 2;
+        char hit = '\0';
+        if (choice == 0)
+        {
+            hit = 'A' + (rand() % 10);
+        }
+        else
+        {
+            hit = '0' + (rand() % 10);
+        }
+        Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim);
+        break;
+    }
+    }
+}
 
 // 14. function to radarsweep
 void RadarSweep(int col, int row, char **grid)
@@ -331,10 +381,17 @@ void RadarSweep(int col, int row, char **grid)
     {
         for (int j = 0; j < 2; j++)
         {
-            if (grid[row + i][col + j] == 'C' || grid[row + i][col + j] == 'D' || grid[row + i][col + j] == 'S' || grid[row + i][col + j] == 'B')
+            if (grid[row + i][col + j] <= 10)
             {
-                printf("Enemy ships found!\n");
-                return;
+                if (grid[row + i][col + j] == 'C' || grid[row + i][col + j] == 'D' || grid[row + i][col + j] == 'S' || grid[row + i][col + j] == 'B')
+                {
+                    printf("Enemy ships found!\n");
+                    return;
+                }
+            }
+            else
+            {
+                printf("Cannot do RadarSweep because index out of bounds!");
             }
         }
     }

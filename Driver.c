@@ -59,7 +59,7 @@ int main()
   insert(player, "Submarine", 2, delayTime, name);
 
   // FOR IMPLEMENTATION: let the bot add his ships
-  addMovesBot(bot);
+  addMovesBot(grid);
   printArray(bot, 10);
 
   // randomly choosing a player
