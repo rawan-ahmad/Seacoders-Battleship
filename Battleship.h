@@ -4,8 +4,10 @@
 #include <ctype.h>
 #include <time.h>
 // do a probability density function
-// add the ships in a smart way
-// hits and misses
+// do if the user entered an entered spot for the easy mode
+// random hits
+// method to check if it is entered
+// method to check rules and choose the best move
 
 // game functions will be here
 
