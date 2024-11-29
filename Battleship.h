@@ -9,6 +9,10 @@
 // method to check if it is entered
 // method to check rules and choose the best move
 
+// NOTES: created an array called aim: 
+// at coord 0: 0 if miss, 1 if hit without sink, 2 if sink
+// at coord 1 and 2 are the last move coordinates
+
 // game functions will be here
 
 // 1. to delay time before clearing for smoother transition
@@ -260,7 +264,7 @@ void printMessage(char letter)
 }
 
 // 12. function to check if the boat sunk
-int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship)
+int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char *aim, char c, char r)
 {
     for (int i = 0; i < 10; i++)
     {
@@ -269,22 +273,35 @@ int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship)
             if (toupper(grid[i][j]) == toupper(ship))
             {
                 *lastTurn = 0;
+                if (bot == 1)
+                {
+                    aim[1] = c;
+                    aim[2] = r;
+                }
                 return 0;
             }
         }
     }
     *lastTurn = 1;
     *shipHits = *shipHits + 1;
+    if (bot == 1)
+    {
+        aim[0] = '1';
+        aim[1] = c;
+        aim[2] = r;
+    }
     return 1;
 }
 
 // 13. function to fire
-void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits)
+void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim)
 {
     if (tolower(difficulty) == 'e' && grid[row][col] == '~')
     {
         grid[row][col] = 'o';
         *lastTurn = 0;
+        if (bot == 1)
+            aim[0] = '0';
         printf("Miss!\n");
     }
     else if (grid[row][col] != '~')
@@ -292,12 +309,16 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
         char test = grid[row][col];
         grid[row][col] = '*';
         printf("Hit!\n");
-        if (sunkShip(grid, lastTurn, shipHits, test) == 1)
+        if (bot == 1)
+            aim[0] = '1';
+        if (sunkShip(grid, lastTurn, shipHits, test, bot, aim, col + 'A', row + '0') == 1)
             printMessage(toupper(test));
     }
     else
     {
         printf("Miss!\n");
+        if (bot == 1)
+            aim[0] = '0';
         *lastTurn = 0;
     }
     printGrid(grid, 10);
@@ -335,7 +356,7 @@ void SmokeScreen(int col, int row, char **array)
 }
 
 // 16. function to artillery
-void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits)
+void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim)
 {
     int found = 0;
     int sunk = 0;
@@ -357,10 +378,12 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
             {
                 char test = grid[row + i][col + j];
                 grid[row + i][col + j] = '*';
-                if (sunkShip(grid, lastTurn, shipHits, test) == 1)
+                if (sunkShip(grid, lastTurn, shipHits, test, bot, aim, col + 'A', row + '0') == 1)
                 {
                     sunk++;
                     printf("Hit!\n");
+                    if (bot == 1)
+                        aim[0] = '1';
                     printMessage(toupper(test));
                 }
                 found = 1;
@@ -368,17 +391,23 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
         }
     }
     if (found == 1 && sunk == 0)
+    {
         printf("Hit!\n");
+        if (bot == 1)
+            aim[0] = '1';
+    }
     else if (found == 0)
     {
         printf("Miss!\n");
+        if (bot == 1)
+            aim[0] = '0';
         *lastTurn = 0;
     }
     printGrid(grid, 10);
 }
 
 // 17. function to torpedo
-void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHits)
+void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim)
 {
     int col = hit - 'A';
     int row = hit - '0';
@@ -396,10 +425,12 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
             {
                 char test = grid[row][col];
                 grid[row][col] = '*';
-                if (sunkShip(grid, lastTurn, shipHits, test) == 1)
+                if (sunkShip(grid, lastTurn, shipHits, test, bot, aim, col + 'A', row + '0') == 1)
                 {
                     sunk++;
                     printf("Hit!\n");
+                    if (bot == 1)
+                        aim[0] = '1';
                     printMessage(toupper(test));
                 }
                 hits = 1;
@@ -418,10 +449,12 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
             {
                 char test = grid[row][col];
                 grid[row][col] = '*';
-                if (sunkShip(grid, lastTurn, shipHits, test) == 1)
+                if (sunkShip(grid, lastTurn, shipHits, test, bot, aim, col + 'A', row + '0') == 1)
                 {
                     sunk++;
                     printf("Hit!\n");
+                    if (bot == 1)
+                        aim[0] = '1';
                     printMessage(toupper(test));
                 }
                 hits = 1;
@@ -430,22 +463,28 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
     }
 
     if (hits == 1 && sunk == 0)
+    {
         printf("Hit!\n");
+        if (bot == 1)
+            aim[0] = '1';
+    }
     else if (hits == 0)
     {
         printf("Miss!\n");
+        if (bot == 1)
+            aim[0] = '0';
         *lastTurn = 0;
     }
     printGrid(grid, 10);
 }
 
 // 18. function for a fighting turn per player (mechanism)
-void fighting(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smoke, char move, char difficulty, char **player1, char **player2, char torp, int delayTime)
+void fighting(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smoke, char move, char difficulty, char **player1, char **player2, char torp, int delayTime, int bot, char *aim)
 {
     if (tolower(move) == 't' && *lastTurn == 1 && *shipHits == 3)
     {
         if (torp - 'A' < 10 && torp - 'A' >= 0 || torp - '0' >= 0 && torp - '0' < 10)
-            Torpedo(torp, player2, difficulty, lastTurn, shipHits);
+            Torpedo(torp, player2, difficulty, lastTurn, shipHits, bot, aim);
     }
     else if (c >= 10 || c < 0 || r >= 10 || r < 0)
     {
@@ -454,7 +493,7 @@ void fighting(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smok
     }
     else if (tolower(move) == 'f')
     {
-        fire(c, r, player2, difficulty, lastTurn, shipHits);
+        fire(c, r, player2, difficulty, lastTurn, shipHits, bot, aim);
     }
     else if (tolower(move) == 'r' && *sweeps > 0)
     {
@@ -472,7 +511,7 @@ void fighting(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smok
     }
     else if (tolower(move) == 'a' && *lastTurn == 1)
     {
-        Artillery(c, r, player2, difficulty, lastTurn, shipHits);
+        Artillery(c, r, player2, difficulty, lastTurn, shipHits, bot, aim);
     }
     else
     {

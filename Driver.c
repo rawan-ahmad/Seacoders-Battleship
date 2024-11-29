@@ -32,7 +32,7 @@ int main()
   char *name = (char *)malloc(sizeof(char) * 100);
   printf("\nPlease enter your name: ");
   scanf("%s", name);
-  // char *name2 = "The bot";
+  char *name2 = "The bot";
 
   system("clear");
 
@@ -52,15 +52,15 @@ int main()
   }
   createArray(bot, SIZE);
 
-  // FOR IMPLEMENTATION: let the bot add his ships
-  addMovesBot(bot);
-  printArray(bot, 10);
-
   // the player adds his own ships
   insert(player, "Carrier", 5, delayTime, name);
   insert(player, "Battleship", 4, delayTime, name);
   insert(player, "Destroyer", 3, delayTime, name);
   insert(player, "Submarine", 2, delayTime, name);
+
+  // FOR IMPLEMENTATION: let the bot add his ships
+  addMovesBot(bot);
+  printArray(bot, 10);
 
   // randomly choosing a player
   int randomPlayer = rand() % (2) + 1;
@@ -84,6 +84,8 @@ int main()
   char *move = (char *)malloc(sizeof(char) * 10);
   char *coord = (char *)malloc(sizeof(char) * 5);
 
+  char *aim = (char *)malloc(sizeof(char) * 3);
+
   // NEEDS MODIFICATIONS
   // turns start here
   while (shipHits < 4 && shipHitsB < 4)
@@ -98,14 +100,14 @@ int main()
     int c = toupper(coord[0]);
     int r = coord[1];
     invert(&c, &r);
-    fighting(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime);
+    fighting(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime,0,aim);
 
     if (shipHits == 4)
       break;
 
     // player 2's turn
     // else
-    // printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
+    printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
     printGrid(player, SIZE);
     char moves[5];
     availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB,1,&moves);
@@ -114,7 +116,7 @@ int main()
     c = toupper(coord[0]);
     r = coord[1];
     invert(&c, &r);
-    fighting(c, r, &shipHitsB, &lastTurnB, &sweepsB, &smokeB, move[0], difficulty[0], bot, player, toupper(coord[0]), delayTime);
+    fighting(c, r, &shipHitsB, &lastTurnB, &sweepsB, &smokeB, move[0], difficulty[0], bot, player, toupper(coord[0]), delayTime,1,aim);
     printf("\n");
   }
 
