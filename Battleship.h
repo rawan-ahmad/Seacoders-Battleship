@@ -5,7 +5,7 @@
 #include <time.h>
 // improve the hitting of the bot
 // improve the placement of the bot
-// improve random hit
+// print moves of bot
 
 // NOTES: created an array called aim:
 // at coord 0: 0 if miss, 1 if hit without sink, 2 if sink
@@ -110,6 +110,7 @@ int checkShip(int col, int row, int shipSize, char **grid, char direction, const
             return 0;
         }
     }
+
     return 1;
 }
 
@@ -558,12 +559,14 @@ int previouslyHit(int c, int r, char **grid)
         return 0;
 }
 
-void randomHit(int frequency[10][10], int played, char move, char **grid, char difficulty, int lastTurn, int shipHits, char *aim)
+void randomHit(int frequency[10][10], int *played, char move, char **grid, char difficulty, int lastTurn, int shipHits, char *aim, int total)
 {
     int x = rand() % 10;
     int y = rand() % 10;
-    if (frequency[x][y] >= (played / 2) && previouslyHit(x, y, grid) == 0)
+    if (frequency[x][y] >= ( *played / 2) && previouslyHit(x, y, grid) == 0)
     {
+        if (total > 10)
+            *played= *played-1;
         switch (move)
         {
         case 'f':
@@ -596,7 +599,7 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
         }
     }
     else
-        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim);
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total);
 }
 
 char bestMove(char *moves)
@@ -616,13 +619,13 @@ char bestMove(char *moves)
     return 'n';
 }
 
-void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int lastTurn, int shipHits, char *aim)
+void botMove(int frequency[10][10], int *played, char *moves, char **grid, char difficulty, int lastTurn, int shipHits, char *aim, int total)
 {
 
     if (aim[0] == '0' || aim[0] == '2')
     {
         char move = bestMove(moves);
-        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim);
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total);
     }
     else
     {
@@ -682,4 +685,3 @@ void botMove(int frequency[10][10], int played, char *moves, char **grid, char d
         }
     }
 }
-

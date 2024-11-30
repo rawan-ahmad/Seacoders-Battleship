@@ -22,15 +22,16 @@ int main()
   fscanf(myFile, "%d", &played);
   fclose(myFile);
 
-  for (int i = 0; i < 10; i++)
-  {
-    for (int j = 0; j < 10; j++)
-    {
-      printf("%d ", frequency[i][j]);
-    }
-    printf("\n");
-  }
-
+  /* for (int i = 0; i < 10; i++)
+   {
+     for (int j = 0; j < 10; j++)
+     {
+       printf("%d ", frequency[i][j]);
+     }
+     printf("\n");
+   }
+ */
+ 
   // introduction
   printf("\nWelcome to battleship game! \nCoded by seacoders!\n\n");
   printf("The goal of the game is to sink all 4 of the opponent's ships.\nThe first player to sink all of the opponent's ships wins.\n\n");
@@ -113,6 +114,8 @@ int main()
   char *aim = (char *)malloc(sizeof(char) * 5);
   aim[0] = '0';
 
+  int total=0;
+
   // turns start here
   while (shipHits < 4 && shipHitsB < 4)
   {
@@ -134,7 +137,8 @@ int main()
     printf("\nIt's the bot's turn\n");
     char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
     // we should print what the bot chose to hit
-    botMove(frequency, played, moves, player, difficulty[0], lastTurnB, shipHitsB, aim);
+    total++;
+    botMove(frequency, &played, moves, player, difficulty[0], lastTurnB, shipHitsB, aim,total);
     delay(1200);
     printf("\n");
   }
