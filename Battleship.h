@@ -4,7 +4,6 @@
 #include <ctype.h>
 #include <time.h>
 // do if the user entered an entered spot for the easy mode
-// method to check if it is entered
 // method to check rules and choose the best move
 
 // NOTES: created an array called aim:
@@ -543,8 +542,8 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
 {
     int x = rand() % 10;
     int y = rand() % 10;
-    if (frequency[x][y] >= (played/2) && previouslyHit(x,y,grid)==0)
-    { 
+    if (frequency[x][y] >= (played / 2) && previouslyHit(x, y, grid) == 0)
+    {
         switch (move)
         {
         case 'f':
@@ -575,7 +574,9 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
             break;
         }
         }
-    } else randomHit(frequency,played,move,grid,difficulty,lastTurn,shipHits,aim);
+    }
+    else
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim);
 }
 char bestMove(char *moves)
 {
@@ -593,6 +594,7 @@ char bestMove(char *moves)
     }
     return 'n';
 }
+
 void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int lastTurn, int shipHits, char *aim)
 {
     if (aim[0] == 0 || aim[0] == 2)
