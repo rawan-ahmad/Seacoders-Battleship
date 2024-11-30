@@ -595,7 +595,7 @@ char bestMove(char *moves)
     return 'n';
 }
 
-void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int lastTurn, int shipHits, char *aim)
+void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int lastTurn, int shipHits, char *aim, int r, int c)
 {
     if (aim[0] == 0 || aim[0] == 2)
     {
@@ -604,6 +604,52 @@ void botMove(int frequency[10][10], int played, char *moves, char **grid, char d
     }
     else
     {
-        // hit nearby
+         if(r != 0 && r != 9 && c != 0 && c != 9 && difficulty= 'e'){
+        char left  = grid[r-1][c];
+        char right = grid[r+1][c];
+        char up = grid[r][c+1];
+        char down = grid[r][c-1];
+        int x, y;
+        
+        if(right != 'o' || right != '*' || up != 'o' || up != '*' || left != 'o' || left != '*' || down != 'o' || down != '*')  {
+            move = bestMove(moves);  
+            int cell = rand() % 4; 
+            if(cell == 0) x = r-1; y = c;
+            else if(cell == 1)x = r+1; y = c;
+            else if(cell == 2)x = r; y = c+1;
+            else x = r; y = c-1;
+        switch (move)
+        {
+        case 'f':
+            fire(x, y, grid, difficulty, lastTurn, shipHits, 1, aim);
+            break;
+        case 'r':
+            RadarSweep(x, y, grid);
+            break;
+        case 's':
+            SmokeScreen(x, y, grid);
+            break;
+        case 'a':
+            Artillery(x, y, grid, difficulty, lastTurn, shipHits, 1, aim);
+            break;
+        case 't':
+        {
+            int choice = rand() % 2;
+            char hit;
+            if (choice == 1)
+            {
+                hit = 'A' + (x);
+            }
+            else
+            {
+                hit = '0' + (y);
+            }
+            Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim);
+            break;
+        }
+        } 
+        }
+    }
+
     }
 }
