@@ -7,12 +7,11 @@
 
 int main()
 {
+  // getting the probability
   FILE *myFile;
   int played;
-
   int frequency[10][10];
   myFile = fopen("probability.txt", "r");
-
   for (int i = 0; i < 10; i++)
   {
     for (int j = 0; j < 10; j++)
@@ -21,7 +20,6 @@ int main()
     }
   }
   fscanf(myFile, "%d", &played);
-
   fclose(myFile);
 
   for (int i = 0; i < 10; i++)
@@ -114,12 +112,10 @@ int main()
 
   char *aim = (char *)malloc(sizeof(char) * 3);
 
-  // NEEDS MODIFICATIONS
   // turns start here
   while (shipHits < 4 && shipHitsB < 4)
   {
-    // player 1's turn
-    // if it is not the bot do
+    // player's turn
     printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
     printGrid(bot, SIZE);
     availableMoves(shipHits, sweeps, smoke, lastTurn, 0, NULL);
@@ -133,8 +129,7 @@ int main()
     if (shipHits == 4)
       break;
 
-    // player 2's turn
-    // else
+    // bot's turn
     printf("\nIt's the bot's turn\n");
     printGrid(player, SIZE);
     char moves[5];

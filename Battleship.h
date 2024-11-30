@@ -4,7 +4,6 @@
 #include <ctype.h>
 #include <time.h>
 // do if the user entered an entered spot for the easy mode
-// random hits
 // method to check if it is entered
 // method to check rules and choose the best move
 
@@ -253,7 +252,6 @@ char *availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot,
 }
 
 // CHANGE (the bot should know the missing and their sizes)
-// we should store the last hit move, last sink move and the last nothing move
 // 11. function to print sunk message
 void printMessage(char letter)
 {
@@ -330,7 +328,6 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
     }
     printGrid(grid, 10);
 }
-
 
 // 14. function to radarsweep
 void RadarSweep(int col, int row, char **grid)
@@ -534,13 +531,20 @@ void playerMove(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *sm
         *lastTurn = 0;
     }
 }
+int previouslyHit(int c, int r, char **grid)
+{
+    if (grid[c][r] == 'o' || grid[c][r] == '*')
+        return 1;
+    else
+        return 0;
+}
 
 void randomHit(int frequency[10][10], int played, char move, char **grid, char difficulty, int lastTurn, int shipHits, char *aim)
 {
     int x = rand() % 10;
     int y = rand() % 10;
-    if (frequency[x][y] >= (played - 2))
-    {
+    if (frequency[x][y] >= (played/2) && previouslyHit(x,y,grid)==0)
+    { 
         switch (move)
         {
         case 'f':
@@ -571,7 +575,7 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
             break;
         }
         }
-    }
+    } else randomHit(frequency,played,move,grid,difficulty,lastTurn,shipHits,aim);
 }
 char bestMove(char *moves)
 {
