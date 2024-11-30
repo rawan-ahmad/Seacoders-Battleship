@@ -547,7 +547,7 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
         switch (move)
         {
         case 'f':
-            fire(x, y, grid, difficulty, lastTurn, shipHits, 1, aim);
+            fire(x, y, grid, difficulty, *lastTurn, *shipHits, 1, aim);
             break;
         case 'r':
             RadarSweep(x, y, grid);
@@ -556,7 +556,7 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
             SmokeScreen(x, y, grid);
             break;
         case 'a':
-            Artillery(x, y, grid, difficulty, lastTurn, shipHits, 1, aim);
+            Artillery(x, y, grid, difficulty, *lastTurn, *shipHits, 1, aim);
             break;
         case 't':
         {
@@ -570,7 +570,7 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
             {
                 hit = '0' + (y);
             }
-            Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim);
+            Torpedo(hit, grid, difficulty, *lastTurn, *shipHits, 1, aim);
             break;
         }
         }
@@ -597,14 +597,15 @@ char bestMove(char *moves)
 
 void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int lastTurn, int shipHits, char *aim, int r, int c)
 {
+    char move='\0';
     if (aim[0] == 0 || aim[0] == 2)
     {
-        char move = bestMove(moves);
-        randomHit(frequency, played, moves[], grid, difficulty, lastTurn, shipHits, aim);
+         move = bestMove(moves);
+        randomHit(frequency, played, moves, grid, difficulty, lastTurn, shipHits, aim);
     }
     else
     {
-         if(r != 0 && r != 9 && c != 0 && c != 9 && difficulty= 'e'){
+         if(r != 0 && r != 9 && c != 0 && c != 9 && difficulty== 'e'){
         char left  = grid[r-1][c];
         char right = grid[r+1][c];
         char up = grid[r][c+1];
@@ -614,10 +615,12 @@ void botMove(int frequency[10][10], int played, char *moves, char **grid, char d
         if(right != 'o' || right != '*' || up != 'o' || up != '*' || left != 'o' || left != '*' || down != 'o' || down != '*')  {
             move = bestMove(moves);  
             int cell = rand() % 4; 
-            if(cell == 0) x = r-1; y = c;
-            else if(cell == 1)x = r+1; y = c;
-            else if(cell == 2)x = r; y = c+1;
-            else x = r; y = c-1;
+            if(cell == 0){ 
+                x = r-1; y = c;
+                }
+            else if(cell == 1) {x = r+1; y = c;}
+            else if(cell == 2){x = r; y = c+1;}
+            else{ x = r; y = c-1;}
         switch (move)
         {
         case 'f':
