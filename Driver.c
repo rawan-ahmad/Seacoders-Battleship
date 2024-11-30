@@ -110,7 +110,7 @@ int main()
   char *move = (char *)malloc(sizeof(char) * 10);
   char *coord = (char *)malloc(sizeof(char) * 5);
 
-  char *aim = (char *)malloc(sizeof(char) * 3);
+  char *aim = (char *)malloc(sizeof(char) * 5);
   aim[0] = '0';
 
   // turns start here
@@ -133,6 +133,7 @@ int main()
     // bot's turn
     printf("\nIt's the bot's turn\n");
     char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1, moves);
+    // we should print what the bot chose to hit
     botMove(frequency, played, moves, player, difficulty[0], lastTurnB, shipHitsB, aim);
     delay(1200);
     printf("\n");

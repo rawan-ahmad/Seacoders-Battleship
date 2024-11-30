@@ -3,8 +3,6 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
-// do if the user entered an entered spot for the easy mode
-// method to check rules and choose the best move
 
 // NOTES: created an array called aim:
 // at coord 0: 0 if miss, 1 if hit without sink, 2 if sink
@@ -179,7 +177,6 @@ void insert(char **grid, char ship[10], int size, int delayTime, char *name)
 }
 
 // 9. adding bot ships randomly
-// we can add more smart strategies
 void addMovesBot(char **grid)
 {
     printf("Loading ...\nThe bot is placing his ships ...\n");
@@ -198,7 +195,6 @@ void addMovesBot(char **grid)
         }
         else
             d = 'v';
-        // printf("%d %d\n", x, y);
         if (checkShip(x, y, i, grid, d, 10, 1) == 1)
         {
             addShip(x, y, i, grid, d);
@@ -208,9 +204,8 @@ void addMovesBot(char **grid)
     system("clear");
 }
 
-// added an array to store available moves for the bot
 // 10. function to print available moves
-char *availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot, char *aim)
+char *availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot)
 {
     char *moves = (char *)malloc(sizeof(char) * 5);
     int i = 0;
@@ -250,7 +245,6 @@ char *availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot,
         return 0;
 }
 
-// CHANGE (the bot should know the missing and their sizes)
 // 11. function to print sunk message
 void printMessage(char letter)
 {
