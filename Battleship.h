@@ -294,7 +294,7 @@ int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char
 // 13. function to fire
 void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim)
 {
-    if (tolower(difficulty) == 'e' && grid[row][col] == '~')
+    if (tolower(difficulty) == 'e' && grid[row][col] == '~'||grid[row][col] != 'o')
     {
         grid[row][col] = 'o';
         *lastTurn = 0;
@@ -302,7 +302,7 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
             aim[0] = '0';
         printf("Miss!\n");
     }
-    else if (grid[row][col] != '~')
+    else if (grid[row][col] != '~'&&grid[row][col] != 'o')
     {
         char test = grid[row][col];
         grid[row][col] = '*';
@@ -387,7 +387,7 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
             {
                 grid[row + i][col + j] = 'o';
             }
-            else if (grid[row + i][col + j] != '~')
+            else if (grid[row + i][col + j] != '~'&&grid[row][col] != 'o')
             {
                 char test = grid[row + i][col + j];
                 grid[row + i][col + j] = '*';
@@ -441,7 +441,7 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
             {
                 grid[row][col] = 'o';
             }
-            else if (grid[row][col] != '~')
+            else if (grid[row][col] != '~'&&grid[row][col] != 'o')
             {
                 char test = grid[row][col];
                 grid[row][col] = '*';
@@ -465,7 +465,7 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
             {
                 grid[row][col] = 'o';
             }
-            else if (grid[row][col] != '~')
+            else if (grid[row][col] != '~'&&grid[row][col] != 'o')
             {
                 char test = grid[row][col];
                 grid[row][col] = '*';
