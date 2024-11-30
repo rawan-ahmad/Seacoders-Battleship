@@ -116,37 +116,32 @@ int main()
 
   // NEEDS MODIFICATIONS
   // turns start here
-  /* while (shipHits < 4 && shipHitsB < 4)
-   {
-     // player 1's turn
-     // if it is not the bot do
-     printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
-     printGrid(bot, SIZE);
-     availableMoves(shipHits, sweeps, smoke, lastTurn, 0, NULL);
-     printf("From the above moves, choose your next one with its coordinate: ");
-     scanf("%s %s", move, coord);
-     int c = toupper(coord[0]);
-     int r = coord[1];
-     invert(&c, &r);
-     fighting(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime, 0, aim);
+  while (shipHits < 4 && shipHitsB < 4)
+  {
+    // player 1's turn
+    // if it is not the bot do
+    printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
+    printGrid(bot, SIZE);
+    availableMoves(shipHits, sweeps, smoke, lastTurn, 0, NULL);
+    printf("From the above moves, choose your next one with its coordinate: ");
+    scanf("%s %s", move, coord);
+    int c = toupper(coord[0]);
+    int r = coord[1];
+    invert(&c, &r);
+    playerHit(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime, 0, aim);
 
-     if (shipHits == 4)
-       break;
+    if (shipHits == 4)
+      break;
 
-     // player 2's turn
-     // else
-     printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", "Bot");
-     printGrid(player, SIZE);
-     char moves [5];
-     availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1, moves);
-     printf("From the above moves, choose your next one with its coordinate: ");
-     scanf("%s %s", move, coord);
-     c = toupper(coord[0]);
-     r = coord[1];
-     invert(&c, &r);
-     fighting(c, r, &shipHitsB, &lastTurnB, &sweepsB, &smokeB, move[0], difficulty[0], bot, player, toupper(coord[0]), delayTime, 1, aim);
-     printf("\n");
-   } */
+    // player 2's turn
+    // else
+    printf("\nIt's the bot's turn\n");
+    printGrid(player, SIZE);
+    char moves[5];
+    availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1, moves);
+    botMove(frequency, played, moves, player, difficulty, &lastTurnB, &shipHitsB, aim);
+    printf("\n");
+  }
 
   // announcing the winner
   if (shipHits == 4)
@@ -185,4 +180,5 @@ int main()
   free(bot);
   free(move);
   free(coord);
+  free(aim);
 }

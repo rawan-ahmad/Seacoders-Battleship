@@ -494,12 +494,12 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
 }
 
 // 18. function for a fighting turn per player (mechanism)
-void fighting(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smoke, char move, char difficulty, char **player1, char **player2, char torp, int delayTime, int bot, char *aim)
+void playerMove(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smoke, char move, char difficulty, char **player, char **enemy, char torp, int delayTime, int bot, char *aim)
 {
     if (tolower(move) == 't' && *lastTurn == 1 && *shipHits == 3)
     {
         if (torp - 'A' < 10 && torp - 'A' >= 0 || torp - '0' >= 0 && torp - '0' < 10)
-            Torpedo(torp, player2, difficulty, lastTurn, shipHits, bot, aim);
+            Torpedo(torp, enemy, difficulty, lastTurn, shipHits, bot, aim);
     }
     else if (c >= 10 || c < 0 || r >= 10 || r < 0)
     {
@@ -508,17 +508,17 @@ void fighting(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smok
     }
     else if (tolower(move) == 'f')
     {
-        fire(c, r, player2, difficulty, lastTurn, shipHits, bot, aim);
+        fire(c, r, enemy, difficulty, lastTurn, shipHits, bot, aim);
     }
     else if (tolower(move) == 'r' && *sweeps > 0)
     {
-        RadarSweep(c, r, player2);
+        RadarSweep(c, r, enemy);
         *sweeps = *sweeps - 1;
         *lastTurn = 0;
     }
     else if (tolower(move) == 's' && *shipHits > *smoke)
     {
-        SmokeScreen(c, r, player1);
+        SmokeScreen(c, r, player);
         *smoke = *smoke + 1;
         *lastTurn = 0;
         delay(delayTime);
@@ -526,7 +526,7 @@ void fighting(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smok
     }
     else if (tolower(move) == 'a' && *lastTurn == 1)
     {
-        Artillery(c, r, player2, difficulty, lastTurn, shipHits, bot, aim);
+        Artillery(c, r, enemy, difficulty, lastTurn, shipHits, bot, aim);
     }
     else
     {
