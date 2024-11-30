@@ -36,7 +36,7 @@ int main()
   printf("The goal of the game is to sink all 4 of the opponent's ships.\nThe first player to sink all of the opponent's ships wins.\n\n");
 
   // for a smoother transition between turns fix delayTime to 1200 or 1500
-  const int delayTime = 0;
+  const int delayTime = 1200;
   // we fixed it at 0 to not risk errors due to the different hardware used by the user
 
   // ask for difficulty
@@ -111,14 +111,14 @@ int main()
   char *coord = (char *)malloc(sizeof(char) * 5);
 
   char *aim = (char *)malloc(sizeof(char) * 3);
-  aim[0]='0';
+  aim[0] = '0';
 
   // turns start here
   while (shipHits < 4 && shipHitsB < 4)
   {
     // player's turn
     printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
-    printGrid(bot, SIZE);
+    printGrid(bot, "");
     availableMoves(shipHits, sweeps, smoke, lastTurn, 0, NULL);
     printf("From the above moves, choose your next one with its coordinate: ");
     scanf("%s %s", move, coord);
@@ -132,10 +132,9 @@ int main()
 
     // bot's turn
     printf("\nIt's the bot's turn\n");
-    printGrid(player, SIZE);
-    char moves[5];
-    availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1, moves);
+    char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1, moves);
     botMove(frequency, played, moves, player, difficulty[0], lastTurnB, shipHitsB, aim);
+    delay(1200);
     printf("\n");
   }
 
