@@ -7,6 +7,32 @@
 
 int main()
 {
+  FILE *myFile;
+  int played;
+
+  int frequency[10][10];
+  myFile = fopen("probability.txt", "r");
+
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      fscanf(myFile, "%d", &frequency[i][j]);
+    }
+  }
+  fscanf(myFile, "%d", &played);
+
+  fclose(myFile);
+
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      printf("%d ", frequency[i][j]);
+    }
+    printf("\n");
+  }
+
   // introduction
   printf("\nWelcome to battleship game! \nCoded by seacoders!\n\n");
   printf("The goal of the game is to sink all 4 of the opponent's ships.\nThe first player to sink all of the opponent's ships wins.\n\n");
@@ -58,8 +84,10 @@ int main()
   insert(player, "Destroyer", 3, delayTime, name);
   insert(player, "Submarine", 2, delayTime, name);
 
-  // FOR IMPLEMENTATION: let the bot add his ships
-  addMovesBot(grid);
+  char **temp = player;
+
+  // let the bot add his ships
+  addMovesBot(bot);
   printArray(bot, 10);
 
   // randomly choosing a player
@@ -88,43 +116,67 @@ int main()
 
   // NEEDS MODIFICATIONS
   // turns start here
-  while (shipHits < 4 && shipHitsB < 4)
-  {
-    // player 1's turn
-    // if it is not the bot do
-    printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
-    printGrid(bot, SIZE);
-    availableMoves(shipHits, sweeps, smoke, lastTurn,0,NULL);
-    printf("From the above moves, choose your next one with its coordinate: ");
-    scanf("%s %s", move, coord);
-    int c = toupper(coord[0]);
-    int r = coord[1];
-    invert(&c, &r);
-    fighting(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime,0,aim);
+  /* while (shipHits < 4 && shipHitsB < 4)
+   {
+     // player 1's turn
+     // if it is not the bot do
+     printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
+     printGrid(bot, SIZE);
+     availableMoves(shipHits, sweeps, smoke, lastTurn, 0, NULL);
+     printf("From the above moves, choose your next one with its coordinate: ");
+     scanf("%s %s", move, coord);
+     int c = toupper(coord[0]);
+     int r = coord[1];
+     invert(&c, &r);
+     fighting(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime, 0, aim);
 
-    if (shipHits == 4)
-      break;
+     if (shipHits == 4)
+       break;
 
-    // player 2's turn
-    // else
-    printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", bot);
-    printGrid(player, SIZE);
-    char moves[5];
-    availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB,1,&moves);
-    printf("From the above moves, choose your next one with its coordinate: ");
-    scanf("%s %s", move, coord);
-    c = toupper(coord[0]);
-    r = coord[1];
-    invert(&c, &r);
-    fighting(c, r, &shipHitsB, &lastTurnB, &sweepsB, &smokeB, move[0], difficulty[0], bot, player, toupper(coord[0]), delayTime,1,aim);
-    printf("\n");
-  }
+     // player 2's turn
+     // else
+     printf("\n%s, it is your turn to fight!\nThis is your opponents grid:\n", "Bot");
+     printGrid(player, SIZE);
+     char moves [5];
+     availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1, moves);
+     printf("From the above moves, choose your next one with its coordinate: ");
+     scanf("%s %s", move, coord);
+     c = toupper(coord[0]);
+     r = coord[1];
+     invert(&c, &r);
+     fighting(c, r, &shipHitsB, &lastTurnB, &sweepsB, &smokeB, move[0], difficulty[0], bot, player, toupper(coord[0]), delayTime, 1, aim);
+     printf("\n");
+   } */
 
   // announcing the winner
   if (shipHits == 4)
     printf("%s is the winner!\n", name);
   else
     printf("The bot is the winner!\n");
+
+  // updating probability for future games
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      if (temp[i][j] != '~')
+      {
+        frequency[i][j]++;
+      }
+    }
+  }
+
+  myFile = fopen("probability.txt", "w");
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      fprintf(myFile, "%d ", frequency[i][j]);
+    }
+    fprintf(myFile, "\n ");
+  }
+  fprintf(myFile, "%d", played + 1);
+  fclose(myFile);
 
   // freeing
   free(difficulty);

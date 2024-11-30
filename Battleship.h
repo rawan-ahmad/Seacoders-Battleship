@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
-// do a probability density function
 // do if the user entered an entered spot for the easy mode
 // random hits
 // method to check if it is entered
@@ -213,7 +212,7 @@ void addMovesBot(char **grid)
 
 // added an array to store available moves for the bot
 // 10. function to print available moves
-char *availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot)
+char *availableMoves(int shipHits, int sweeps, int smoke, int lastTurn, int bot, char *aim)
 {
     char *moves = (char *)malloc(sizeof(char) * 5);
     int i = 0;
@@ -331,82 +330,8 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
     }
     printGrid(grid, 10);
 }
-// bot chooses which move to make
-// we're going to add probability function for bot to choose based on it fa its gonna change alot
-void botHit(char **grid, char difficulty, int *shipHits, int sweeps, int smoke, int *lastTurn, char *aim)
-{
-    // this is only for the first move the bot should fire randomly
-    int row = rand() % (10);
-    int col = rand() % (10);
-    fire(col, row, grid, difficulty, lastTurn, shipHits, 1, aim);
-    char *moves = availableMoves(shipHits, sweeps, smoke, lastTurn, 1);
-    int elements = strlen(moves);
-    int randomIndex = rand() % elements;
-    char bestMove=chooseBestMove(grid, moves, probabilityGrid[10][10], difficulty);
-    switch (moves[randomIndex])
-    {
-    case 'f':
-        fire(col, row, grid, difficulty, lastTurn, shipHits, 1, aim);
-        break;
-    case 'r':
-        RadarSweep(col, row, grid);
-        break;
-    case 's':
-        SmokeScreen(col, row, grid);
-        break;
-    case 'a':
-        Artillery(col, row, grid, difficulty, lastTurn, shipHits, 1, aim);
-        break;
-    case 't':
-    {
-        int choice = rand() % 2;
-        char hit = '\0';
-        if (choice == 0)
-        {
-            hit = 'A' + (rand() % 10);
-        }
-        else
-        {
-            hit = '0' + (rand() % 10);
-        }
-        Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim);
-        break;
-    }
-    }
-}
-char chooseBestMove(char **grid, char *moves, int probabilityGrid[10][10], char difficulty)
-{
-    int maxProb=0;
-    int row;
-    int col;
-    char bestMove='\0';
-    int fireProb, artilleryProb, torpedoProb;
-    for(int i=0; i<strlen(moves);i++){
-        char move=moves[i];
-        if(move=='f'){
-        maxCellProbability(probabilityGrid, &row, &col);
-        fireProb=calculateFireProbability(grid,row,col);
-        if(maxProb<fireProb){
-            maxProb=fireProb;
-            bestMove='f';
-        }
-        }
-        else if(moves[i]=='a'){
-         artilleryProb=calculateRegionProbability(probabilityGrid);
-        if(maxProb<artilleryProb){
-            maxProb=artilleryProb;
-            bestMove='a';
-        }
-        }
-      else if(moves[i]=='t'){
-       torpedoProb=calculateTorpedoProbability(probabilityGrid, row, col);
-       if(maxProb<torpedoProb){
-        maxProb=torpedoProb;
-        bestMove='t';
-       }
-      }
-    }
-}
+
+
 // 14. function to radarsweep
 void RadarSweep(int col, int row, char **grid)
 {
@@ -608,115 +533,71 @@ void fighting(int c, int r, int *shipHits, int *lastTurn, int *sweeps, int *smok
         printf("Your move is unavailable for you!\nYou lost your turn.\n");
         *lastTurn = 0;
     }
-    // probability to use fire
-    int calculateFireProbability(char **grid, int r, int c)
+}
+
+void randomHit(int frequency[10][10], int played, char move, char **grid, char difficulty, int lastTurn, int shipHits, char *aim)
+{
+    int x = rand() % 10;
+    int y = rand() % 10;
+    if (frequency[x][y] >= (played - 2))
     {
-       
-        if (r > 0 && grid[r - 1][c] == '*')
+        switch (move)
         {
-            probabilityGrid[r][c];
-        }
-        if (r < 9 && grid[r + 1][c] == '*')
+        case 'f':
+            fire(x, y, grid, difficulty, lastTurn, shipHits, 1, aim);
+            break;
+        case 'r':
+            RadarSweep(x, y, grid);
+            break;
+        case 's':
+            SmokeScreen(x, y, grid);
+            break;
+        case 'a':
+            Artillery(x, y, grid, difficulty, lastTurn, shipHits, 1, aim);
+            break;
+        case 't':
         {
-              probabilityGrid[r][c];
-        }
-        if (c > 0 && grid[r][c - 1] == '*')
-        {
-              probabilityGrid[r][c];
-        }
-        if (c < 9 && grid[r][c + 1] == '*')
-        {
-              probabilityGrid[r][c]++;
-        }
-      return probabilityGrid[r][c];
-    }
-    void maxCellProbability(int probabilityGrid[10][10], int *row, int *col){
-     *row=0; 
-     *col=0;
-     int maxProb=0;
-     for(int r=0; r<=9; r++){
-        for(int c=0; c<=9; c++){
-            if(probabilityGrid[r][c]>maxProb){
-                maxProb=probabilityGrid[r][c];
-                *row=r;
-                *col=c;
-            }
-        }
-     }
-    }
-    
-    // probability to use Artillery hit
-    int calculateRegionProbability(int probabilityGrid[10][10])
-    {
-        int score = 0;
-        int maxScore = -1;
-        for (int r = 0; r <= 9; r++)
-        {
-            for
-                int(c = 0; c <= 9; c++)
-                {
-                    score = probabilityGrid[r][c] + probabilityGrid[r][c + 1] + probabilityGrid[r + 1][c] + probabilityGrid[r + 1][c + 1];
-                    if (score > maxScore)
-                    {
-                        maxScore = score;
-                    }
-                }
-        }
-        return maxScore;
-    }
-    // probability for row torpedo
-    int rowProbability(int probabilityGrid[10][10], int row)
-    {
-        int sum = 0;
-        for (int i = 0; i <= 9; i++)
-        {
-            sum += probabilityGrid[row][i];
-        }
-        return sum;
-    }
-    // probability for col torpedo
-    int colProbability(int probabilityGrid[10][10], int col)
-    {
-        int sum = 0;
-        for (int i = 0; i < -9; i++)
-        {
-            sum += probabilityGrid[i][col];
-        }
-        return sum;
-    }
-    int calculateTorpedoProbability(int probabilityGrid[10][10], int row, int col){
-     int rowProb=rowProbability(probabilityGrid,row);
-      int colProb=colProbability(probabilityGrid,col);
-      if(rowProb>colProb){
-        return rowProb;
-      }
-      else return colProb;
-    }
-    // probability for best torpedo target
-    char calculateTorpedoTarget(int probabilityGrid[10][10])
-    {
-        int maxRow = 0; int maxCol = 0;
-        for (int r = 0; r <= 9; r++)
-        {
-            int rowProb = rowProbability(probabilityGrid, r);
-            if (maxRow < rowProb)
+            int choice = rand() % 2;
+            char hit;
+            if (choice == 1)
             {
-                maxRow = rowProb;
+                hit = 'A' + (x);
             }
-        }
-        for (int c = 0; c <= 9; c++)
-        {
-            int colProb = colProbability(probabilityGrid, c);
-            if (maxCol < colprob)
+            else
             {
-                maxCol = colProb;
+                hit = '0' + (y);
             }
+            Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim);
+            break;
         }
-        if (maxRow >= maxCol)
-        {
-            return 'R';
         }
-        else
-            return 'C';
+    }
+}
+char bestMove(char *moves)
+{
+    if (moves[4] != '\0')
+    {
+        return moves[4];
+    }
+    if (moves[3] != '\0')
+    {
+        return moves[3];
+    }
+    if (moves[0] != '\0')
+    {
+        return moves[0];
+    }
+    return 'n';
+}
+void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int lastTurn, int shipHits, char *aim)
+{
+    if (aim[0] == 0 || aim[0] == 2)
+    {
+        char move = bestMove(moves);
+        randomHit(frequency, played, moves[], grid, difficulty, lastTurn, shipHits, aim);
+    }
+    else
+    {
+        // hit nearby
     }
 }
