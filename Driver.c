@@ -111,6 +111,7 @@ int main()
   char *coord = (char *)malloc(sizeof(char) * 5);
 
   char *aim = (char *)malloc(sizeof(char) * 3);
+  aim[0]='0';
 
   // turns start here
   while (shipHits < 4 && shipHitsB < 4)
@@ -124,7 +125,7 @@ int main()
     int c = toupper(coord[0]);
     int r = coord[1];
     invert(&c, &r);
-    playerHit(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime, 0, aim);
+    playerMove(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime, 0, aim);
 
     if (shipHits == 4)
       break;
@@ -134,7 +135,7 @@ int main()
     printGrid(player, SIZE);
     char moves[5];
     availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1, moves);
-    botMove(frequency, played, moves, player, difficulty, &lastTurnB, &shipHitsB, aim);
+    botMove(frequency, played, moves, player, difficulty[0], lastTurnB, shipHitsB, aim);
     printf("\n");
   }
 
