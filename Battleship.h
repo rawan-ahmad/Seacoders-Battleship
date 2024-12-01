@@ -407,7 +407,7 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
             {
                 grid[row + i][col + j] = 'o';
             }
-            else if (grid[row + i][col + j] != '~' && grid[row][col] != 'o')
+            else if (grid[row + i][col + j] != '~' && grid[row + i][col + j] != 'o')
             {
                 char test = grid[row + i][col + j];
                 grid[row + i][col + j] = '*';
