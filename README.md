@@ -4,16 +4,16 @@ Battleship game
 Rawan Ahmad, Tala Chehayeb, Cynthia Khalil, Rafic Rachidi
 
 1. delay: function for better smooth transition while playing
-2. createArray: create a grid 10x10 and fill it with ~
-3. printArray: it print the arrays with where the ships are located
-4. printGrid: print he grid to show the opponent the hit and the misses
-5. invert: converts char to indices
-6. checkShip: check if we can insert the ship 1 if true or 0 if false(check if ship i out of bounds or if ships are overlaping)
+2. createArray: creates a grid 10x10 and fills it with ~
+3. printArray: prints the arrays to show where the ships are located
+4. printGrid: prints the grid to show the opponent the hits and misses
+5. invert: converts characters to indices
+6. checkShip: checks if we can insert the ship, and returns 1 if true or 0 if false (checks if ship is out of bounds or if there are ships overlaping)
 7. addShip: add ships to the grid
-8. insert: each player insert the ships
-9. addMovesBot: bot adds ships randmoly
-10. availableMove: prints the available moves to use in each trun
-11. printMessage: prints which boat has been sunked
+8. insert: allows each player to insert their ships by asking for the coordinates and returns if it was successfully inserted
+9. addMovesBot: bot adds ships randomly
+10. availableMove: prints the available moves to use in each turn
+11. printMessage: prints which boat was sunk
 12. sunkShip: checks if the ship sunk and sets last turn to 1 if it has
 13. fire: fires a shot at specific coordinates, determines if it was a hit or miss, and updates the grid accordingly
 14. RadarSweep: scans a 2x2 area in the grid to detect whether there are enemy ships while also making boundary checks,and prints the result 
