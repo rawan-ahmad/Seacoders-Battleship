@@ -31,7 +31,7 @@ int main()
      printf("\n");
    }
  */
- 
+
   // introduction
   printf("\nWelcome to battleship game! \nCoded by seacoders!\n\n");
   printf("The goal of the game is to sink all 4 of the opponent's ships.\nThe first player to sink all of the opponent's ships wins.\n\n");
@@ -114,8 +114,8 @@ int main()
   char *aim = (char *)malloc(sizeof(char) * 5);
   aim[0] = '0';
 
-  int total=0;
-
+  int total = 0;
+  int hitButNotSunk = 0;
   // turns start here
   while (shipHits < 4 && shipHitsB < 4)
   {
@@ -138,7 +138,7 @@ int main()
     char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
     // we should print what the bot chose to hit
     total++;
-    botMove(frequency, &played, moves, player, difficulty[0], lastTurnB, shipHitsB, aim,total);
+    botMove(frequency, &played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, hitButNotSunk);
     delay(1200);
     printf("\n");
   }
