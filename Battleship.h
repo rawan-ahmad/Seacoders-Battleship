@@ -272,11 +272,6 @@ int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char
             if (toupper(grid[i][j]) == toupper(ship))
             {
                 *lastTurn = 0;
-                /* if (bot == 1 )
-                 {
-                     aim[1] = c;
-                     aim[2] = r;
-                 }*/
                 return 0;
             }
         }
@@ -300,8 +295,6 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
     {
         grid[row][col] = 'o';
         *lastTurn = 0;
-        // if (bot == 1)
-        //  aim[0] = '0';
         printf("Miss!\n");
     }
     else if (grid[row][col] != '~' && grid[row][col] != 'o')
@@ -322,8 +315,6 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
     else
     {
         printf("Miss!\n");
-        // if (bot == 1)
-        //  aim[0] = '0';
         *lastTurn = 0;
     }
     char *space;
@@ -422,8 +413,6 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
     else if (found == 0)
     {
         printf("Miss!\n");
-        // if (bot == 1)
-        //  aim[0] = '0';
         *lastTurn = 0;
     }
     char *space;
@@ -502,8 +491,6 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
     else if (hits == 0)
     {
         printf("Miss!\n");
-        // if (bot == 1)
-        //  aim[0] = '0';
         *lastTurn = 0;
     }
     char *space;
@@ -566,14 +553,15 @@ int previouslyHit(int c, int r, char **grid)
         return 0;
 }
 
-void randomHit(int frequency[10][10], int *played, char move, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk)
+void randomHit(int frequency[10][10], int played, char move, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk)
 {
     int x = rand() % 10;
     int y = rand() % 10;
-    if (frequency[x][y] >= (*played / 2) && previouslyHit(x, y, grid) == 0)
+    if (total > 10)
+        played = played / 2;
+    if (frequency[x][y] >= (played / 2) && previouslyHit(x, y, grid) == 0)
     {
-        if (total > 10)
-            *played = *played - 1;
+
         switch (move)
         {
         case 'f':
@@ -617,7 +605,7 @@ void randomHit(int frequency[10][10], int *played, char move, char **grid, char 
         randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk);
 }
 
-char bestMove(char *moves)
+char bestMove(char *moves, int shipHits)
 {
     if (moves[4] != '\0')
     {
@@ -627,6 +615,10 @@ char bestMove(char *moves)
     {
         return moves[3];
     }
+    if (shipHits >= 2 && move[2] != '\0')
+    {
+        return move[2];
+    }
     if (moves[0] != '\0')
     {
         return moves[0];
@@ -634,7 +626,7 @@ char bestMove(char *moves)
     return 'n';
 }
 
-void botMove(int frequency[10][10], int *played, char *moves, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk)
+void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk, int *dir)
 {
 
     if (aim[0] == '0' && *hitButNotSunk == 0 || aim[0] == '2')
@@ -648,47 +640,98 @@ void botMove(int frequency[10][10], int *played, char *moves, char **grid, char 
         int y = aim[2] - '0';
         int c = x;
         int r = y;
-        int dir = rand() % 2;
         int count = 0;
-        // r - 1 >= 0 && grid[r - 1][c] != 'o' && grid[r - 1][c] != '~' || r + 1 <= 9 && grid[r + 1][c] != 'o' && grid[r + 1][c] != '~'
         do
         {
-            if (dir == 1)
+            if (grid[r + 1][c] == 'o' && grid[r - 1][c] == 'o')
             {
-
-                if (r - 1 >= 0 && grid[r - 1][c] != 'o' && grid[r - 1][c] != '*')
-                { // up
-                    while (r >= 0 && grid[r][c] == '*')
+                *dir = 3;
+            }
+            if (*dir == 1 && r - 1 >= 0)
+            {
+                r--;
+                if (grid[r][c] == 'o')
+                {
+                    while (r + 1 <= 9 && grid[r + 1][c] == '*' && grid[r + 1][c] != 'o')
+                    {
+                        r++;
+                        *dir = 2;
+                    }
+                }
+            }
+            else if (*dir == 2 && r + 1 < 10)
+            {
+                r++;
+                if (grid[r][c] == 'o')
+                {
+                    while (r - 1 >= 0 && grid[r - 1][c] == '*' && grid[r - 1][c] != 'o')
                     {
                         r--;
+                        *dir = 1;
+                    }
+                }
+            }
+            else if (*dir == 3 && c - 1 >= 0)
+            {
+                c--;
+                if (grid[r][c] == 'o')
+                {
+                    while (c + 1 <= 9 && grid[r][c + 1] == '*' && grid[r][c + 1] != 'o')
+                    {
+                        c++;
+                        *dir = 4;
+                    }
+                }
+            }
+            else if (*dir == 4 && c + 1 < 10)
+            {
+                c++;
+                if (grid[r][c] == 'o')
+                {
+                    while (c - 1 >= 0 && grid[r][c - 1] == '*' && grid[r][c - 1] != 'o')
+                    {
+                        c--;
+                        *dir = 3;
+                    }
+                }
+            }
+            else
+            {
+                if (r - 1 >= 0 && grid[r - 1][c] != 'o' && grid[r - 1][c] != '*')
+                { // up
+                    while (r >= 0 && grid[r][c] == '*' && grid[r][c] != 'o')
+                    {
+                        r--;
+                        *dir = 1;
                     }
                 }
                 else if (r == y && r + 1 <= 9 && grid[r + 1][c] != 'o' && grid[r + 1][c] != '*')
                 { // down
-                    while (r <= 9 && grid[r][c] == '*')
+                    while (r <= 9 && grid[r][c] == '*' && grid[r][c] != 'o')
                     {
                         r++;
+                        *dir = 2;
                     }
                 }
+
                 else
-                    dir = 1;
-            }
-            else
-            // if (grid[r][c] == 'o')
-            {
-                r = y;
-                if (c - 1 >= 0 && grid[r][c - 1] != 'o' && grid[r][c - 1] != '*')
-                { // left
-                    while (c >= 0 && grid[r][c] == '*')
-                    {
-                        c--;
+                {
+                    r = y;
+                    if (c - 1 >= 0 && grid[r][c - 1] != 'o' && grid[r][c - 1] != '*')
+                    { // left
+                        while (c >= 0 && grid[r][c] == '*' && grid[r][c] != 'o')
+                        {
+                            c--;
+                            *dir = 3;
+                        }
                     }
-                }
-                else if (c == x && c + 1 <= 9 && grid[r][c + 1] != 'o' && grid[r][c + 1] != '*')
-                { // right
-                    while (c <= 9 && grid[r][c] == '*')
-                    {
-                        c++;
+                    else if (c == x && c + 1 <= 9 && grid[r][c + 1] != 'o' && grid[r][c + 1] != '*')
+                    { // right
+                        while (c <= 9 && grid[r][c] == '*' && grid[r][c] != 'o')
+                        {
+                            c++;
+                            *dir = 4;
+                        }
                     }
                 }
             }
@@ -720,7 +763,18 @@ void botMove(int frequency[10][10], int *played, char *moves, char **grid, char 
                 RadarSweep(c, r, grid);
                 break;
             case 's':
-
+                for (int i = 0; i < 10; i++)
+                {
+                    for (int j = 0; j < 10; j++)
+                    {
+                        if (bot[i][j] != '*' && bot[i][j] != '~' && bot[i][j] != 'o')
+                        {
+                            c = i;
+                            r = j;
+                            break;
+                        }
+                    }
+                }
                 SmokeScreen(c, r, grid);
                 break;
             case 'a':
@@ -749,5 +803,7 @@ void botMove(int frequency[10][10], int *played, char *moves, char **grid, char 
             }
             }
         }
+        if (aim[0] == '2')
+            *dir = 0;
     }
 }

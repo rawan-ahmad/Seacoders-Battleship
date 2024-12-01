@@ -9,8 +9,7 @@ int main()
 {
   // getting the probability
   FILE *myFile;
-  const int totalPlayed;
-  int played = totalPlayed + 1;
+  int played;
   int frequency[10][10];
   myFile = fopen("probability.txt", "r");
   for (int i = 0; i < 10; i++)
@@ -107,6 +106,7 @@ int main()
 
   int total = 0;
   int hitButNotSunk = 0;
+  int dir = 0;
   // turns start here
   while (shipHits < 4 && shipHitsB < 4)
   {
@@ -133,9 +133,8 @@ int main()
     {
       printf("\nIt's the bot's turn\n");
       char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
-      // we should print what the bot chose to hit
       total++;
-      botMove(frequency, &played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk);
+      botMove(frequency, played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk, &dir);
       delay(1000);
       printf("\n");
       randomPlayer = 1;
@@ -169,7 +168,7 @@ int main()
     }
     fprintf(myFile, "\n ");
   }
-  fprintf(myFile, "%d", totalPlayed + 1);
+  fprintf(myFile, "%d", played + 1);
   fclose(myFile);
 
   // freeing
