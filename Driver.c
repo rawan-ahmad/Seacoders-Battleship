@@ -10,7 +10,7 @@ int main()
   // getting the probability
   FILE *myFile;
   const int totalPlayed;
-  int played = totalPlayed;
+  int played = totalPlayed + 1;
   int frequency[10][10];
   myFile = fopen("probability.txt", "r");
   for (int i = 0; i < 10; i++)
@@ -125,7 +125,7 @@ int main()
 
       if (shipHits == 4)
         break;
-      randomPlayer == 0;
+      randomPlayer = 0;
     }
 
     // bot's turn
@@ -138,6 +138,7 @@ int main()
       botMove(frequency, &played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk);
       delay(1000);
       printf("\n");
+      randomPlayer = 1;
     }
   }
 
@@ -168,7 +169,7 @@ int main()
     }
     fprintf(myFile, "\n ");
   }
-  fprintf(myFile, "%d", played + 1);
+  fprintf(myFile, "%d", totalPlayed + 1);
   fclose(myFile);
 
   // freeing
