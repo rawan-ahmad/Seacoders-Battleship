@@ -3,6 +3,19 @@ CMPS 270
 Battleship game 
 Rawan Ahmad, Tala Chehayeb, Cynthia Khalil, Rafic Rachidi
 
+The Battleship game is a two-player game where each player should target the enemy’s ships by different types of attacking and trying to sink all the ships first to win. There are 4 ships for each player placed on a 10x10 grid, and we have implemented a version, where which allows a player to play against a bot. We created two grids for each player, one grid to insert their ships, using the insert method, and another to record their hits and misses against their opponent. 
+
+Phase 1: 
+We used the same grid for firing and placing ships.
+Phase 2: 
+For placing ships: we used the random strategy where the bot randomly chooses the coordinates and orientation of its ships.
+For firing: we used the random firing and hunt and destroy strategies.
+•	The random firing: randomly choosing coordinates to fire from the frequency grid (updated after each game) that contains the most frequent coordinates where ships may be placed.
+•	The hunt and destroy: once the bot hit a spot, it fires nearby the hit to know the orientation and sink it in future moves.
+•	Choosing the suitable moves: choose the most powerful move available and ignore moves that cut the bots time (radar sweep), in case of sinking 2 or more of the bots’ ship: smokescreen will be used when available. 
+
+Description of the implemented functions:
+
 1. delay: function for better smooth transition while playing
 2. createArray: creates a grid 10x10 and fills it with ~
 3. printArray: prints the arrays to show where the ships are located
