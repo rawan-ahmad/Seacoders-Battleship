@@ -9,7 +9,8 @@ int main()
 {
   // getting the probability
   FILE *myFile;
-  int played;
+  const int totalPlayed;
+  int played = totalPlayed;
   int frequency[10][10];
   myFile = fopen("probability.txt", "r");
   for (int i = 0; i < 10; i++)
@@ -22,22 +23,12 @@ int main()
   fscanf(myFile, "%d", &played);
   fclose(myFile);
 
-  /* for (int i = 0; i < 10; i++)
-   {
-     for (int j = 0; j < 10; j++)
-     {
-       printf("%d ", frequency[i][j]);
-     }
-     printf("\n");
-   }
- */
-
   // introduction
   printf("\nWelcome to battleship game! \nCoded by seacoders!\n\n");
   printf("The goal of the game is to sink all 4 of the opponent's ships.\nThe first player to sink all of the opponent's ships wins.\n\n");
 
   // for a smoother transition between turns fix delayTime to 1200 or 1500
-  const int delayTime = 1200;
+  const int delayTime = 1000;
   // we fixed it at 0 to not risk errors due to the different hardware used by the user
 
   // ask for difficulty
@@ -120,27 +111,34 @@ int main()
   while (shipHits < 4 && shipHitsB < 4)
   {
     // player's turn
-    printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
-    printGrid(bot, "");
-    availableMoves(shipHits, sweeps, smoke, lastTurn, 0);
-    printf("From the above moves, choose your next one with its coordinate: ");
-    scanf("%s %s", move, coord);
-    int c = toupper(coord[0]);
-    int r = coord[1];
-    invert(&c, &r);
-    playerMove(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime, 0, aim);
+    if (randomPlayer == 1)
+    {
+      printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
+      printGrid(bot, "");
+      availableMoves(shipHits, sweeps, smoke, lastTurn, 0);
+      printf("From the above moves, choose your next one with its coordinate: ");
+      scanf("%s %s", move, coord);
+      int c = toupper(coord[0]);
+      int r = coord[1];
+      invert(&c, &r);
+      playerMove(c, r, &shipHits, &lastTurn, &sweeps, &smoke, move[0], difficulty[0], player, bot, toupper(coord[0]), delayTime, 0, aim);
 
-    if (shipHits == 4)
-      break;
+      if (shipHits == 4)
+        break;
+      randomPlayer == 0;
+    }
 
     // bot's turn
-    printf("\nIt's the bot's turn\n");
-    char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
-    // we should print what the bot chose to hit
-    total++;
-    botMove(frequency, &played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk);
-    delay(1200);
-    printf("\n");
+    else
+    {
+      printf("\nIt's the bot's turn\n");
+      char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
+      // we should print what the bot chose to hit
+      total++;
+      botMove(frequency, &played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk);
+      delay(1000);
+      printf("\n");
+    }
   }
 
   // announcing the winner

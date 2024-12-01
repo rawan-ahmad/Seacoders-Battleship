@@ -413,7 +413,7 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
     if (found == 1 && sunk == 0)
     {
         printf("Hit!\n");
-        if (bot == 1 )
+        if (bot == 1)
         {
             aim[0] = '1';
             aim[1] = 'A' + col;
@@ -493,7 +493,7 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
     if (hits == 1 && sunk == 0)
     {
         printf("Hit!\n");
-        if (bot == 1 )
+        if (bot == 1)
         {
             aim[0] = '1';
             aim[1] = 'A' + col;
@@ -568,7 +568,7 @@ int previouslyHit(int c, int r, char **grid)
         return 0;
 }
 
-void randomHit(int frequency[10][10], int *played, char move, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total,int *hitButNotSunk)
+void randomHit(int frequency[10][10], int *played, char move, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk)
 {
     int x = rand() % 10;
     int y = rand() % 10;
@@ -579,7 +579,7 @@ void randomHit(int frequency[10][10], int *played, char move, char **grid, char 
         switch (move)
         {
         case 'f':
-            fire(x, y, grid, difficulty, lastTurn, shipHits, 1, aim,hitButNotSunk );
+            fire(x, y, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
             break;
         case 'r':
             RadarSweep(x, y, grid);
@@ -588,6 +588,10 @@ void randomHit(int frequency[10][10], int *played, char move, char **grid, char 
             SmokeScreen(x, y, grid);
             break;
         case 'a':
+        if (x + 2 >= 10)
+                x -= 2;
+            if (y + 2 >= 10)
+                y -= 2;
             Artillery(x, y, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
             break;
         case 't':
@@ -608,7 +612,7 @@ void randomHit(int frequency[10][10], int *played, char move, char **grid, char 
         }
     }
     else
-        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total,hitButNotSunk);
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk);
 }
 
 char bestMove(char *moves)
@@ -634,84 +638,104 @@ void botMove(int frequency[10][10], int *played, char *moves, char **grid, char 
     if (aim[0] == '0' && *hitButNotSunk == 0 || aim[0] == '2')
     {
         char move = bestMove(moves);
-        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total,hitButNotSunk);
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk);
     }
     else if (aim[0] == '1' || *hitButNotSunk == 1)
     {
-        int c = aim[1] - 'A';
-        int r = aim[2] - '0';
-        if (r - 1 >= 0 && grid[r - 1][c] != 'o'&&grid[r - 1][c] != '~'||r + 1 <= 9 && grid[r + 1][c] != 'o'&& grid[r + 1][c] != '~')
+        int x = aim[1] - 'A';
+        int y = aim[2] - '0';
+        printf("%d %d\n", x, y);
+        int c = x;
+        int r = y;
+        int dir = 0;
+        int count = 0;
+        // r - 1 >= 0 && grid[r - 1][c] != 'o' && grid[r - 1][c] != '~' || r + 1 <= 9 && grid[r + 1][c] != 'o' && grid[r + 1][c] != '~'
+        do
         {
-            if (r - 1 >= 0 && grid[r - 1][c] != 'o')
-            { // left
-                r--;
-                while (r - 1 >= 0 && grid[r][c] == '*')
-                {
-                    r--;
-                }
-            }
-            if (r + 1 <= 9 && grid[r + 1][c] != 'o')
-            { // right
-                r++;
-                while (r + 1 <= 9 && grid[r][c] == '*')
-                {
-                    r++;
-                }
-            }
-        }
-        else
-        {
-            if (c - 1 >= 0 && grid[r][c - 1] != 'o')
-            { // up
-                c--;
-                while (c - 1 >= 0 && grid[r][c] == '*')
-                {
-                    c--;
-                }
-            }
-            if (c + 1 <= 9 && grid[r][c + 1] != 'o')
-            { // down
-                c++;
-                while (c + 1 <= 9 && grid[r][c] == '*')
-                {
-                    c++;
-                }
-            }
-        }
-        if (previouslyHit(c, r, grid) == 0)
-        {
-            char move = bestMove(moves);
+            if (dir == 0)
+            {
 
-            switch (move)
-            {
-            case 'f':
-                fire(c, r, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
-                break;
-            case 'r':
-                RadarSweep(c, r, grid);
-                break;
-            case 's':
-                SmokeScreen(c, r, grid);
-                break;
-            case 'a':
-                Artillery(c, r, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
-                break;
-            case 't':
-            {
-                int choice = rand() % 2;
-                char hit;
-                if (choice == 1)
-                {
-                    hit = 'A' + (c);
+                if (r - 1 >= 0 && grid[r - 1][c] != 'o' && grid[r - 1][c] != '*')
+                { // up
+                    while (r >= 0 && grid[r][c] == '*')
+                    {
+                        r--;
+                    }
+                }
+                else if (r == y && r + 1 <= 9 && grid[r + 1][c] != 'o' && grid[r + 1][c] != '*')
+                { // down
+                    while (r <= 9 && grid[r][c] == '*')
+                    {
+                        r++;
+                    }
                 }
                 else
-                {
-                    hit = '0' + (r);
+                    dir = 1;
+            }
+            else if (dir == 1)
+            // if (grid[r][c] == 'o')
+            {
+                r = y;
+                if (c - 1 >= 0 && grid[r][c - 1] != 'o' && grid[r][c - 1] != '*')
+                { // left
+                    while (c >= 0 && grid[r][c] == '*')
+                    {
+                        c--;
+                    }
                 }
-                Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
-                break;
+                else if (c == x && c + 1 <= 9 && grid[r][c + 1] != 'o' && grid[r][c + 1] != '*')
+                { // right
+                    while (c <= 9 && grid[r][c] == '*')
+                    {
+                        c++;
+                    }
+                }
             }
+            count++;
+            if (count > 50)
+            {
+                char move = bestMove(moves);
+                aim[0] = '0';
+                *hitButNotSunk = 0;
+                randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk);
             }
+        } while (previouslyHit(c, r, grid) == 1);
+
+        char move = bestMove(moves);
+
+        switch (move)
+        {
+        case 'f':
+            fire(c, r, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
+            break;
+        case 'r':
+            RadarSweep(c, r, grid);
+            break;
+        case 's':
+            SmokeScreen(c, r, grid);
+            break;
+        case 'a':
+            if (c + 2 >= 10)
+                c -= 2;
+            if (r + 2 >= 10)
+                r -= 2;
+            Artillery(c, r, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
+            break;
+        case 't':
+        {
+            int choice = rand() % 2;
+            char hit;
+            if (choice == 1)
+            {
+                hit = 'A' + (c);
+            }
+            else
+            {
+                hit = '0' + (r);
+            }
+            Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
+            break;
+        }
         }
     }
 }
