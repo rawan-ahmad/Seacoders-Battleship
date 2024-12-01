@@ -3,7 +3,7 @@ CMPS 270
 Battleship game 
 Rawan Ahmad, Tala Chehayeb, Cynthia Khalil, Rafic Rachidi
 
-The Battleship game is a two-player game where each player should target the enemy’s ships by different types of attacking and trying to sink all the ships first to win. There are 4 ships for each player placed on a 10x10 grid, and we have implemented a version, where which allows a player to play against a bot. We created two grids for each player, one grid to insert their ships, using the insert method, and another to record their hits and misses against their opponent. 
+The Battleship game is a two-player game where each player should target the enemy’s ships by different types of attacking and trying to sink all the ships first to win. There are 4 ships for each player placed on a 10x10 grid, and we have implemented a version, where which allows a player to play against a bot. We created two grids for each player, one grid to insert their ships, using the insert method, and to record their hits and misses against their opponent for each. 
 
 Phase 1: 
 We used the same grid for firing and placing ships.
