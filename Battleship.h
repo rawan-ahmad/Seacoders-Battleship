@@ -264,7 +264,7 @@ void printMessage(char letter)
 }
 
 // 12. function to check if the boat sunk
-int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char *aim, char c, char r, int hitButNotSunk)
+int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char *aim, char c, char r, int *hitButNotSunk)
 {
 
     for (int i = 0; i < 10; i++)
@@ -287,7 +287,7 @@ int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char
     *shipHits = *shipHits + 1;
     if (bot == 1)
     {
-        hitButNotSunk = 0;
+        *hitButNotSunk = 0;
         aim[0] = '2';
         aim[1] = c;
         aim[2] = r;
@@ -296,7 +296,7 @@ int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char
 }
 
 // 13. function to fire
-void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim, int hitButNotSunk)
+void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim, int *hitButNotSunk)
 {
     if (tolower(difficulty) == 'e' && grid[row][col] == '~' || grid[row][col] == 'o')
     {
@@ -311,12 +311,12 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
         char test = grid[row][col];
         grid[row][col] = '*';
         printf("Hit!\n");
-        if (bot == 1 && aim[0] == '0')
+        if (bot == 1)
         {
             aim[0] = '1';
             aim[1] = 'A' + col;
             aim[2] = '0' + row;
-            hitButNotSunk = 1;
+            *hitButNotSunk = 1;
         }
         if (sunkShip(grid, lastTurn, shipHits, test, bot, aim, col + 'A', row + '0', hitButNotSunk) == 1)
             printMessage(toupper(test));
@@ -378,7 +378,7 @@ void SmokeScreen(int col, int row, char **array)
 }
 
 // 16. function to artillery
-void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim, int hitButNotSunk)
+void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim, int *hitButNotSunk)
 {
     int found = 0;
     int sunk = 0;
@@ -413,12 +413,12 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
     if (found == 1 && sunk == 0)
     {
         printf("Hit!\n");
-        if (bot == 1 && aim[0] == '0')
+        if (bot == 1 )
         {
             aim[0] = '1';
             aim[1] = 'A' + col;
             aim[2] = '0' + row;
-            hitButNotSunk = 1;
+            *hitButNotSunk = 1;
         }
     }
     else if (found == 0)
@@ -439,7 +439,7 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
 }
 
 // 17. function to torpedo
-void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim, int hitButNotSunk)
+void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim, int *hitButNotSunk)
 {
     int col = hit - 'A';
     int row = hit - '0';
@@ -493,12 +493,12 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
     if (hits == 1 && sunk == 0)
     {
         printf("Hit!\n");
-        if (bot == 1 && aim[0] == '0')
+        if (bot == 1 )
         {
             aim[0] = '1';
             aim[1] = 'A' + col;
             aim[2] = '0' + row;
-            hitButNotSunk = 1;
+            *hitButNotSunk = 1;
         }
     }
     else if (hits == 0)
@@ -568,7 +568,7 @@ int previouslyHit(int c, int r, char **grid)
         return 0;
 }
 
-void randomHit(int frequency[10][10], int *played, char move, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total)
+void randomHit(int frequency[10][10], int *played, char move, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total,int *hitButNotSunk)
 {
     int x = rand() % 10;
     int y = rand() % 10;
@@ -579,7 +579,7 @@ void randomHit(int frequency[10][10], int *played, char move, char **grid, char 
         switch (move)
         {
         case 'f':
-            fire(x, y, grid, difficulty, lastTurn, shipHits, 1, aim, 0);
+            fire(x, y, grid, difficulty, lastTurn, shipHits, 1, aim,hitButNotSunk );
             break;
         case 'r':
             RadarSweep(x, y, grid);
@@ -588,7 +588,7 @@ void randomHit(int frequency[10][10], int *played, char move, char **grid, char 
             SmokeScreen(x, y, grid);
             break;
         case 'a':
-            Artillery(x, y, grid, difficulty, lastTurn, shipHits, 1, aim, 0);
+            Artillery(x, y, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
             break;
         case 't':
         {
@@ -602,13 +602,13 @@ void randomHit(int frequency[10][10], int *played, char move, char **grid, char 
             {
                 hit = '0' + (y);
             }
-            Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim, 0);
+            Torpedo(hit, grid, difficulty, lastTurn, shipHits, 1, aim, hitButNotSunk);
             break;
         }
         }
     }
     else
-        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total);
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total,hitButNotSunk);
 }
 
 char bestMove(char *moves)
@@ -628,15 +628,15 @@ char bestMove(char *moves)
     return 'n';
 }
 
-void botMove(int frequency[10][10], int *played, char *moves, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int hitButNotSunk)
+void botMove(int frequency[10][10], int *played, char *moves, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk)
 {
 
-    if (aim[0] == '0' && hitButNotSunk == 0 || aim[0] == '2')
+    if (aim[0] == '0' && *hitButNotSunk == 0 || aim[0] == '2')
     {
         char move = bestMove(moves);
-        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total);
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total,hitButNotSunk);
     }
-    else if (aim[0] == '1' || hitButNotSunk == 1)
+    else if (aim[0] == '1' || *hitButNotSunk == 1)
     {
         int c = aim[1] - 'A';
         int r = aim[2] - '0';

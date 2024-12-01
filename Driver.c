@@ -138,7 +138,7 @@ int main()
     char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
     // we should print what the bot chose to hit
     total++;
-    botMove(frequency, &played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, hitButNotSunk);
+    botMove(frequency, &played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk);
     delay(1200);
     printf("\n");
   }
