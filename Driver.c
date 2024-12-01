@@ -114,7 +114,7 @@ int main()
     if (randomPlayer == 1)
     {
       printf("%s, it is your turn to fight!\nThis is your opponents grid:\n", name);
-      printGrid(bot, "");
+      printGrid(bot, "", difficulty[0]);
       availableMoves(shipHits, sweeps, smoke, lastTurn, 0);
       printf("From the above moves, choose your next one with its coordinate: ");
       scanf("%s %s", move, coord);
@@ -134,7 +134,8 @@ int main()
       printf("\nIt's the bot's turn\n");
       char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
       total++;
-      botMove(frequency, played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk, &dir, bot, shipHits, &smokeB);
+      int prob = rand() % 2;
+      botMove(frequency, played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk, &dir, bot, shipHits, &smokeB, prob);
       delay(delayTime);
       printf("\n");
       randomPlayer = 1;
