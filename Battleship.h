@@ -302,6 +302,12 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
         grid[row][col] = 'o';
         *lastTurn = 0;
         printf("Miss!\n");
+        if (tolower(difficulty) == 'h' && bot == 1 && aim[0] != '1')
+        {
+            aim[0] = '0';
+            aim[1] = 'A' + col;
+            aim[2] = '0' + row;
+        }
     }
     else if (grid[row][col] != '~' && grid[row][col] != 'o')
     {
@@ -321,6 +327,12 @@ void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *sh
     else
     {
         printf("Miss!\n");
+        if (tolower(difficulty) == 'h' && bot == 1 && aim[0] != '1')
+        {
+            aim[0] = '0';
+            aim[1] = 'A' + col;
+            aim[2] = '0' + row;
+        }
         *lastTurn = 0;
     }
     char *space;
@@ -423,6 +435,12 @@ void Artillery(int col, int row, char **grid, char difficulty, int *lastTurn, in
     else if (found == 0)
     {
         printf("Miss!\n");
+        if (tolower(difficulty) == 'h' && bot == 1 && aim[0] != '1')
+        {
+            aim[0] = '0';
+            aim[1] = 'A' + col;
+            aim[2] = '0' + row;
+        }
         *lastTurn = 0;
     }
     char *space;
@@ -508,6 +526,12 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
     else if (hits == 0)
     {
         printf("Miss!\n");
+        if (tolower(difficulty) == 'h' && bot == 1 && aim[0] != '1')
+        {
+            aim[0] = '0';
+            aim[1] = 'A' + col;
+            aim[2] = '0' + row;
+        }
         *lastTurn = 0;
     }
     char *space;
@@ -763,9 +787,9 @@ void botMove(int frequency[10][10], int played, char *moves, char **grid, char d
         } while (previouslyHit(c, r, grid) == 1);
 
         char move = bestMove(moves, enemyHits);
+
         if (count > 50)
         {
-
             aim[0] = '0';
             *hitButNotSunk = 0;
             randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk, smoke);
