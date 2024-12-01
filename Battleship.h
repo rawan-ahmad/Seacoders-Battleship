@@ -291,6 +291,12 @@ int sunkShip(char **grid, int *lastTurn, int *shipHits, char ship, int bot, char
 // 13. function to fire
 void fire(int col, int row, char **grid, char difficulty, int *lastTurn, int *shipHits, int bot, char *aim, int *hitButNotSunk)
 {
+    if (col >= 10 || col < 0 || row >= 10 || row < 0)
+    {
+        printf("Your coordinates are invalid!\nYou lost your turn.\n");
+        *lastTurn = 0;
+        return;
+    }
     if (tolower(difficulty) == 'e' && grid[row][col] == '~' || grid[row][col] == 'o')
     {
         grid[row][col] = 'o';
@@ -358,12 +364,16 @@ void SmokeScreen(int col, int row, char **array)
     for (int i = 0; i < 2; i++)
     {
         for (int j = 0; j < 2; j++)
+
         {
-            if (array[row + i][col + j] != '~' || array[row + i][col + j] != 'o')
-                array[row + i][col + j] = tolower(array[row + i][col + j]);
+            if (row + i < 10 && col + j < 10)
+            {
+                if (array[row + i][col + j] != '~' || array[row + i][col + j] != 'o')
+                    array[row + i][col + j] = tolower(array[row + i][col + j]);
+            }
         }
     }
-    printf("Smokescreen is successfully applied.\n");
+    printf("The move is successfully applied.\n");
 }
 
 // 16. function to artillery
@@ -432,6 +442,7 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
     int row = hit - '0';
     int hits = 0;
     int sunk = 0;
+
     if (col >= 0 && col < 10)
     {
         for (row = 0; row < 10; row++)
@@ -454,7 +465,7 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
             }
         }
     }
-    else
+    else if (row >= 0 && row < 10)
     {
         for (col = 0; col < 10; col++)
         {
@@ -475,6 +486,12 @@ void Torpedo(char hit, char **grid, char difficulty, int *lastTurn, int *shipHit
                 hits = 1;
             }
         }
+    }
+    else
+    {
+        printf("Your coordinates are invalid!\nYou lost your turn.\n");
+        *lastTurn = 0;
+        return;
     }
 
     if (hits == 1 && sunk == 0)
@@ -553,7 +570,7 @@ int previouslyHit(int c, int r, char **grid)
         return 0;
 }
 
-void randomHit(int frequency[10][10], int played, char move, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk)
+void randomHit(int frequency[10][10], int played, char move, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk, int *smoke)
 {
     int x = rand() % 10;
     int y = rand() % 10;
@@ -574,6 +591,9 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
             break;
         case 's':
             SmokeScreen(x, y, grid);
+            *smoke = *smoke + 1;
+            *lastTurn = 0;
+            system("clear");
             break;
         case 'a':
             if (x + 2 >= 10)
@@ -602,7 +622,7 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
         }
     }
     else
-        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk);
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk, smoke);
 }
 
 char bestMove(char *moves, int shipHits)
@@ -626,13 +646,13 @@ char bestMove(char *moves, int shipHits)
     return 'n';
 }
 
-void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk, int *dir, char**bot, int enemyHits)
+void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk, int *dir, char **bot, int enemyHits, int *smoke)
 {
 
     if (aim[0] == '0' && *hitButNotSunk == 0 || aim[0] == '2')
     {
-        char move = bestMove(moves,enemyHits);
-        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk);
+        char move = bestMove(moves, enemyHits);
+        randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk, smoke);
     }
     else if (aim[0] == '1' || *hitButNotSunk == 1)
     {
@@ -742,13 +762,13 @@ void botMove(int frequency[10][10], int played, char *moves, char **grid, char d
             }
         } while (previouslyHit(c, r, grid) == 1);
 
-        char move = bestMove(moves,enemyHits);
+        char move = bestMove(moves, enemyHits);
         if (count > 50)
         {
 
             aim[0] = '0';
             *hitButNotSunk = 0;
-            randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk);
+            randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk, smoke);
         }
         else
         {
@@ -776,6 +796,9 @@ void botMove(int frequency[10][10], int played, char *moves, char **grid, char d
                     }
                 }
                 SmokeScreen(c, r, grid);
+                *smoke = *smoke + 1;
+                *lastTurn = 0;
+                system("clear");
                 break;
             case 'a':
                 if (c + 2 >= 10)

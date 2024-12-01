@@ -77,7 +77,7 @@ int main()
 
   // let the bot add his ships
   addMovesBot(bot);
-  printArray(bot, 10);
+  // printArray(bot, 10);
 
   // randomly choosing a player
   int randomPlayer = rand() % (2) + 1;
@@ -134,7 +134,7 @@ int main()
       printf("\nIt's the bot's turn\n");
       char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
       total++;
-      botMove(frequency, played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk, &dir,bot,shipHits);
+      botMove(frequency, played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk, &dir, bot, shipHits, &smokeB);
       delay(delayTime);
       printf("\n");
       randomPlayer = 1;
