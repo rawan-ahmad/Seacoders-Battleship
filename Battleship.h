@@ -602,6 +602,12 @@ void randomHit(int frequency[10][10], int played, char move, char **grid, char d
         played = played / 2;
     if (frequency[x][y] >= (played / 2) && previouslyHit(x, y, grid) == 0)
     {
+        if (x >= 10 || x < 0 || y >= 10 || y < 0)
+        {
+            printf("Your coordinates are invalid!\nYou lost your turn.\n");
+            *lastTurn = 0;
+            return;
+        }
 
         switch (move)
         {
@@ -796,6 +802,12 @@ void botMove(int frequency[10][10], int played, char *moves, char **grid, char d
         }
         else
         {
+            if (c >= 10 || c < 0 || r >= 10 || r < 0)
+            {
+                printf("Your coordinates are invalid!\nYou lost your turn.\n");
+                *lastTurn = 0;
+                return;
+            }
             switch (move)
             {
             case 'f':
