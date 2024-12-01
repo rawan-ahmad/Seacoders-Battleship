@@ -134,7 +134,7 @@ int main()
       printf("\nIt's the bot's turn\n");
       char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
       total++;
-      botMove(frequency, played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk, &dir);
+      botMove(frequency, played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk, &dir,bot,shipHits);
       delay(1000);
       printf("\n");
       randomPlayer = 1;

@@ -615,9 +615,9 @@ char bestMove(char *moves, int shipHits)
     {
         return moves[3];
     }
-    if (shipHits >= 2 && move[2] != '\0')
+    if (shipHits >= 2 && moves[2] != '\0')
     {
-        return move[2];
+        return moves[2];
     }
     if (moves[0] != '\0')
     {
@@ -626,12 +626,12 @@ char bestMove(char *moves, int shipHits)
     return 'n';
 }
 
-void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk, int *dir)
+void botMove(int frequency[10][10], int played, char *moves, char **grid, char difficulty, int *lastTurn, int *shipHits, char *aim, int total, int *hitButNotSunk, int *dir, char**bot, int enemyHits)
 {
 
     if (aim[0] == '0' && *hitButNotSunk == 0 || aim[0] == '2')
     {
-        char move = bestMove(moves);
+        char move = bestMove(moves,enemyHits);
         randomHit(frequency, played, move, grid, difficulty, lastTurn, shipHits, aim, total, hitButNotSunk);
     }
     else if (aim[0] == '1' || *hitButNotSunk == 1)
@@ -742,7 +742,7 @@ void botMove(int frequency[10][10], int played, char *moves, char **grid, char d
             }
         } while (previouslyHit(c, r, grid) == 1);
 
-        char move = bestMove(moves);
+        char move = bestMove(moves,enemyHits);
         if (count > 50)
         {
 
