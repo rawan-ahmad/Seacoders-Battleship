@@ -27,7 +27,7 @@ int main()
   printf("The goal of the game is to sink all 4 of the opponent's ships.\nThe first player to sink all of the opponent's ships wins.\n\n");
 
   // for a smoother transition between turns fix delayTime to 1200 or 1500
-  const int delayTime = 1000;
+  const int delayTime = 0;
   // we fixed it at 0 to not risk errors due to the different hardware used by the user
 
   // ask for difficulty
@@ -135,7 +135,7 @@ int main()
       char *moves = availableMoves(shipHitsB, sweepsB, smokeB, lastTurnB, 1);
       total++;
       botMove(frequency, played, moves, player, difficulty[0], &lastTurnB, &shipHitsB, aim, total, &hitButNotSunk, &dir,bot,shipHits);
-      delay(1000);
+      delay(delayTime);
       printf("\n");
       randomPlayer = 1;
     }
